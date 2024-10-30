@@ -1,7 +1,22 @@
-const API_BASE_URL = 'http://localhost:3000';
-console.log('debug : get in indexScript.js');
+const API_BASE_URL = 'http://localhost:8000';
 
 // API 호출 관련 함수들
+async function fetchNickname(writerId) {
+    try {
+        const response = await fetch(
+            `http://localhost:8000/getNickname/${writerId}`,
+        );
+        if (!response.ok) throw new Error('Failed to fetch nickname');
+
+        const data = await response.json();
+        console.log('debug : data.', data);
+        return data.nickname;
+    } catch (error) {
+        console.error('Error fetching nickname:', error);
+        return 'Unknown'; // 에러 시 기본 값
+    }
+}
+
 const api = {
     // 게시글 목록 조회
     async getPosts() {
@@ -10,7 +25,6 @@ const api = {
             if (!response.ok) throw new Error('Failed to fetch posts');
 
             const data = await response.json();
-            console.log('debug : getPosts', data); // Promise가 아닌 실제 데이터가 출력됨
             return data;
         } catch (error) {
             console.error('Error fetching posts:', error);
@@ -41,9 +55,9 @@ const api = {
 const utils = {
     // 숫자 포맷팅
     formatNumber(number) {
-        if (number >= 100000) return Math.floor(number / 1000) + 'k';
-        if (number >= 10000) return Math.floor(number / 1000) + 'k';
-        if (number >= 1000) return Math.floor(number / 1000) + 'k';
+        if (number >= 100000) return `${Math.floor(number / 1000)}k`;
+        if (number >= 10000) return `${Math.floor(number / 1000)}k`;
+        if (number >= 1000) return `${Math.floor(number / 1000)}k`;
         return number.toString();
     },
 
@@ -68,36 +82,46 @@ const utils = {
 // DOM 조작 관련 함수들
 const domHandler = {
     // 게시글 HTML 생성
-    createPostElement(post) {
-        console.log('post:', post); // 디버깅용
+    async createPostElement(post) {
+        const nickname = await fetchNickname(post.writer_id);
+
+        //console.log('debug : nickname', nickname);
         return `
             <div class="post" data-post-id="${post.id}">
                 <div class="post-header">
                     <div class="post-title">${post.title}</div>
-                    <div class="post-date">${utils.formatDate(post.createdAt)}</div>
+                    <div class="post-date">${utils.formatDate(post.write_time)}</div>
                 </div>
                 <div class="post-stats">
-                    <span class="likes">좋아요 ${utils.formatNumber(post.likeCnt)}</span>
-                    <span class="comments">댓글 ${utils.formatNumber(post.commentCnt)}</span>
-                    <span class="views">조회수 ${utils.formatNumber(post.viewCnt)}</span>
+                    <span class="likes">좋아요 ${utils.formatNumber(post.like_cnt)}</span>
+                    <span class="comments">댓글 ${utils.formatNumber(post.comment_cnt)}</span>
+                    <span class="views">조회수 ${utils.formatNumber(post.view_cnt)}</span>
                 </div>
                 <div class="user-info">
                     <div class="user-avatar"></div>
-                    <div class="user-name">${post.author}</div>
+                    <div class="user-name">${nickname}</div>
                 </div>
             </div>
         `;
     },
 
     // 게시글 목록 렌더링
-    renderPosts(posts) {
+    async renderPosts(posts) {
         const postsContainer = document.querySelector('.posts');
         // posts가 배열이 아닐 경우 배열로 감싸기
-        const postsArray = Array.isArray(posts) ? posts : [posts];
+        // const postsArray = Array.isArray(posts) ? posts : [posts];
 
-        postsContainer.innerHTML = postsArray
-            .map(post => this.createPostElement(post))
-            .join('');
+        // postsContainer.innerHTML = postsArray
+        //     .map(post => this.createPostElement(post))
+        //     .join('');
+
+        // 모든 게시글에 대해 createPostElement 호출을 병렬로 처리
+        const postElements = await Promise.all(
+            posts.map(post => this.createPostElement(post)),
+        );
+
+        // 각 postElements를 합쳐서 HTML에 추가
+        postsContainer.innerHTML = postElements.join('');
     },
 
     // 작성 폼 토글
