@@ -13,10 +13,15 @@
   "author": "edwin",
   "license": "ISC",
   "dependencies": {
+    "colors": "^1.4.0",
     "connect-timeout": "^1.9.0",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-rate-limit": "^7.4.1",
-    "helmet": "^8.0.0"
+    "helmet": "^8.0.0",
+    "jsdom": "^25.0.1",
+    "moment": "^2.30.1",
+    "mysql2": "^3.11.3"
   },
   "eslintConfig": {
     "extends": "react-app"
