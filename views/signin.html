@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>회원가입</title>
+        <link rel="stylesheet" href="/css/signin.css" />
+    </head>
+    <body>
+        <header>
+            <button id="backButton">&lt;&emsp;</button>
+            <h1>아무 말 대잔치</h1>
+        </header>
+
+        <main>
+            <section class="profile-container">
+                <div class="profile-picture" id="profilePicture">
+                    <input type="file" id="fileInput" accept="image/*" hidden />
+                    <span class="upload-icon">+</span>
+                </div>
+                <h2>회원가입</h2>
+                <form class="signup-form">
+                    <label for="email">이메일*</label>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="이메일을 입력하세요"
+                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                        required
+                    />
+                    <small>※ 영문과 @, .만 사용 가능합니다.</small>
+
+                    <label for="password">비밀번호*</label>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="비밀번호를 입력하세요"
+                        required
+                    />
+
+                    <label for="confirmPassword">비밀번호 확인*</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="비밀번호를 한번 더 입력하세요"
+                        required
+                    />
+
+                    <label for="nickname">닉네임*</label>
+                    <input
+                        type="text"
+                        id="nickname"
+                        placeholder="닉네임을 입력하세요"
+                        required
+                    />
+
+                    <button type="submit" class="signup-button">
+                        회원가입
+                    </button>
+                </form>
+                <button
+                    id="loginButton"
+                    onclick="window.location.href='/login'"
+                >
+                    로그인하러 가기
+                </button>
+            </section>
+        </main>
+
+        <script src="/js/signin.js"></script>
+    </body>
+</html>

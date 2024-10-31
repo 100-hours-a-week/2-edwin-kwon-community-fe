@@ -12,9 +12,16 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/index.html'));
 });
 
-// 다른 페이지 라우트 추가 가능
-router.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/about.html'));
+router.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/login.html'));
+});
+
+router.get('/signin', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/signin.html'));
+});
+
+router.get('/post/:post_id', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/post.html'));
 });
 
 export default router;

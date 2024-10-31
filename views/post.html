@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>게시글 상세 페이지</title>
+        <link rel="stylesheet" href="/css/post.css" />
+    </head>
+    <body>
+        <header>
+            <button id="backButton" onclick="window.history.back()">←</button>
+            <h1>아무 말 대잔치</h1>
+            <div class="profile-container">
+                <div class="profile-icon"></div>
+                <!-- 드롭다운 메뉴 -->
+                <div class="dropdown-menu hidden">
+                    <ul>
+                        <li><a href="/profile">프로필</a></li>
+                        <li><a href="/my-posts">내 게시글</a></li>
+                        <li><a href="/settings">설정</a></li>
+                        <li><button id="logout-btn">로그아웃</button></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <article class="post">
+                <h2 id="post-title">제목 로딩 중...</h2>
+                <div class="post-meta">
+                    <span id="post-author">작성자 로딩 중...</span>
+                    <span id="post-date">날짜 로딩 중...</span>
+                    <div class="action-buttons">
+                        <button id="edit-button">수정</button>
+                        <button id="delete-button">삭제</button>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <img
+                        id="post-img"
+                        src=""
+                        alt="Post Image"
+                        class="post-image"
+                    />
+                    <p id="post-content">내용 로딩 중...</p>
+                </div>
+                <div class="post-stats">
+                    <div id="like-count" class="stat">
+                        <span>0</span> 좋아요
+                    </div>
+                    <div id="view-count" class="stat">0 조회수</div>
+                    <div id="comment-cnt" class="stat">0 댓글</div>
+                </div>
+            </article>
+
+            <section class="comments">
+                <textarea
+                    id="comment-input"
+                    placeholder="댓글을 남겨주세요"
+                ></textarea>
+                <button type="submit" id="submit-comment">댓글 등록</button>
+
+                <div id="comments-section">
+                    <!-- 댓글들이 여기 들어갑니다. -->
+                </div>
+            </section>
+        </main>
+
+        <script src="/js/post.js"></script>
+    </body>
+</html>

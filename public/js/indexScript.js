@@ -4,7 +4,7 @@ const API_BASE_URL = 'http://localhost:8000';
 async function fetchNickname(writerId) {
     try {
         const response = await fetch(
-            `http://localhost:8000/getNickname/${writerId}`,
+            `http://localhost:8000/user-nickname/${writerId}`,
         );
         if (!response.ok) throw new Error('Failed to fetch nickname');
 
@@ -84,10 +84,10 @@ const domHandler = {
     // 게시글 HTML 생성
     async createPostElement(post) {
         const nickname = await fetchNickname(post.writer_id);
+        const postUrl = `/post/${post.board_id}`;
 
-        //console.log('debug : nickname', nickname);
         return `
-            <div class="post" data-post-id="${post.id}">
+            <a href="${postUrl}" div class="post" data-post-id="${post.id}">
                 <div class="post-header">
                     <div class="post-title">${post.title}</div>
                     <div class="post-date">${utils.formatDate(post.write_time)}</div>
@@ -108,12 +108,6 @@ const domHandler = {
     // 게시글 목록 렌더링
     async renderPosts(posts) {
         const postsContainer = document.querySelector('.posts');
-        // posts가 배열이 아닐 경우 배열로 감싸기
-        // const postsArray = Array.isArray(posts) ? posts : [posts];
-
-        // postsContainer.innerHTML = postsArray
-        //     .map(post => this.createPostElement(post))
-        //     .join('');
 
         // 모든 게시글에 대해 createPostElement 호출을 병렬로 처리
         const postElements = await Promise.all(
@@ -220,4 +214,45 @@ document.addEventListener('DOMContentLoaded', function () {
 window.addEventListener('unhandledrejection', function (event) {
     console.error('Unhandled promise rejection:', event.reason);
     alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const profileIcon = document.querySelector('.profile-icon');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    // 로그인 상태 체크 함수
+    function checkLoginStatus() {
+        // 예: localStorage나 세션에서 토큰을 확인
+        return localStorage.getItem('userToken') !== null;
+    }
+
+    // 프로필 아이콘 클릭 이벤트
+    profileIcon.addEventListener('click', function (e) {
+        if (checkLoginStatus()) {
+            // 로그인 상태: 드롭다운 토글
+            dropdownMenu.classList.toggle('hidden');
+        } else {
+            // 비로그인 상태: 로그인 페이지로 이동
+            console.log('로그인 페이지로 이동', window.location.href);
+            window.location.href = '/login';
+        }
+    });
+
+    // 드롭다운 외부 클릭시 닫기
+    document.addEventListener('click', function (e) {
+        if (
+            !profileIcon.contains(e.target) &&
+            !dropdownMenu.contains(e.target)
+        ) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+
+    // 로그아웃 버튼 클릭 이벤트
+    logoutBtn.addEventListener('click', function () {
+        // 로그아웃 처리
+        localStorage.removeItem('userToken');
+        window.location.href = '/login';
+    });
 });
