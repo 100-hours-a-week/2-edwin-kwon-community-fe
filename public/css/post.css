@@ -6,39 +6,6 @@ body {
     background-color: #f9f9f9;
 }
 
-/* 헤더 */
-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    background-color: #fff;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-}
-
-#backButton {
-    font-size: 1.5em;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: #333;
-}
-
-h1 {
-    font-size: 1.2em;
-    color: #333;
-}
-
-.profile-icon img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-}
-
 /* 게시글 본문 */
 main {
     padding: 80px 20px 20px;

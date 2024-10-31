@@ -5,23 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>게시글 상세 페이지</title>
         <link rel="stylesheet" href="/css/post.css" />
+        <link rel="stylesheet" href="/css/header.css" />
     </head>
     <body>
         <header>
-            <button id="backButton" onclick="window.history.back()">←</button>
-            <h1>아무 말 대잔치</h1>
-            <div class="profile-container">
-                <div class="profile-icon"></div>
-                <!-- 드롭다운 메뉴 -->
-                <div class="dropdown-menu hidden">
-                    <ul>
-                        <li><a href="/profile">프로필</a></li>
-                        <li><a href="/my-posts">내 게시글</a></li>
-                        <li><a href="/settings">설정</a></li>
-                        <li><button id="logout-btn">로그아웃</button></li>
-                    </ul>
-                </div>
-            </div>
+            <script type="module">
+                import headerHtml from '/js/header.js';
+                document.body.insertAdjacentHTML('afterbegin', headerHtml);
+            </script>
         </header>
 
         <main>

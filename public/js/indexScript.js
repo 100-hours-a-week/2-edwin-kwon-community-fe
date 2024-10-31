@@ -31,24 +31,6 @@ const api = {
             throw error;
         }
     },
-
-    // 게시글 작성
-    async createPost(postData) {
-        try {
-            const response = await fetch(`${API_BASE_URL}/posts`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(postData),
-            });
-            if (!response.ok) throw new Error('Failed to create post');
-            return await response.json();
-        } catch (error) {
-            console.error('Error creating post:', error);
-            throw error;
-        }
-    },
 };
 
 // 유틸리티 함수들
@@ -75,6 +57,7 @@ const utils = {
                 hour12: false,
             })
             .replace(/\./g, '-')
+            .replace(/\s/g, '')
             .replace(',', '');
     },
 };
@@ -90,12 +73,12 @@ const domHandler = {
             <a href="${postUrl}" div class="post" data-post-id="${post.id}">
                 <div class="post-header">
                     <div class="post-title">${post.title}</div>
+                    <div class="post-stats">
+                        <span class="likes">좋아요 ${utils.formatNumber(post.like_cnt)}</span>
+                        <span class="comments">댓글 ${utils.formatNumber(post.comment_cnt)}</span>
+                        <span class="views">조회수 ${utils.formatNumber(post.view_cnt)}</span>
+                    </div>
                     <div class="post-date">${utils.formatDate(post.write_time)}</div>
-                </div>
-                <div class="post-stats">
-                    <span class="likes">좋아요 ${utils.formatNumber(post.like_cnt)}</span>
-                    <span class="comments">댓글 ${utils.formatNumber(post.comment_cnt)}</span>
-                    <span class="views">조회수 ${utils.formatNumber(post.view_cnt)}</span>
                 </div>
                 <div class="user-info">
                     <div class="user-avatar"></div>
@@ -116,59 +99,6 @@ const domHandler = {
 
         // 각 postElements를 합쳐서 HTML에 추가
         postsContainer.innerHTML = postElements.join('');
-    },
-
-    // 작성 폼 토글
-    toggleWriteForm() {
-        const existingForm = document.querySelector('.write-form');
-        if (existingForm) {
-            existingForm.remove();
-            return;
-        }
-
-        const writeForm = document.createElement('div');
-        writeForm.className = 'write-form';
-        writeForm.innerHTML = `
-            <input 
-                type="text" 
-                id="postTitle" 
-                maxlength="26" 
-                placeholder="제목을 입력하세요 (최대 26자)"
-                style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;"
-            >
-            <button id="submitPost" style="background-color: #ACA0EB; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-                작성완료
-            </button>
-        `;
-
-        const posts = document.querySelector('.posts');
-        posts.insertBefore(writeForm, posts.firstChild);
-
-        // 작성완료 버튼 이벤트 리스너
-        document
-            .getElementById('submitPost')
-            .addEventListener('click', async () => {
-                const titleInput = document.getElementById('postTitle');
-                const title = titleInput.value.trim();
-
-                if (!title) {
-                    alert('제목을 입력해주세요.');
-                    return;
-                }
-
-                try {
-                    const newPost = await api.createPost({
-                        title,
-                        author: '작성자', // 실제로는 로그인된 사용자 정보 사용
-                        createdAt: new Date().toISOString(),
-                    });
-
-                    await loadPosts(); // 목록 새로고침
-                    writeForm.remove();
-                } catch (error) {
-                    alert('게시글 작성에 실패했습니다.');
-                }
-            });
     },
 };
 
@@ -214,45 +144,4 @@ document.addEventListener('DOMContentLoaded', function () {
 window.addEventListener('unhandledrejection', function (event) {
     console.error('Unhandled promise rejection:', event.reason);
     alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    const profileIcon = document.querySelector('.profile-icon');
-    const dropdownMenu = document.querySelector('.dropdown-menu');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    // 로그인 상태 체크 함수
-    function checkLoginStatus() {
-        // 예: localStorage나 세션에서 토큰을 확인
-        return localStorage.getItem('userToken') !== null;
-    }
-
-    // 프로필 아이콘 클릭 이벤트
-    profileIcon.addEventListener('click', function (e) {
-        if (checkLoginStatus()) {
-            // 로그인 상태: 드롭다운 토글
-            dropdownMenu.classList.toggle('hidden');
-        } else {
-            // 비로그인 상태: 로그인 페이지로 이동
-            console.log('로그인 페이지로 이동', window.location.href);
-            window.location.href = '/login';
-        }
-    });
-
-    // 드롭다운 외부 클릭시 닫기
-    document.addEventListener('click', function (e) {
-        if (
-            !profileIcon.contains(e.target) &&
-            !dropdownMenu.contains(e.target)
-        ) {
-            dropdownMenu.classList.add('hidden');
-        }
-    });
-
-    // 로그아웃 버튼 클릭 이벤트
-    logoutBtn.addEventListener('click', function () {
-        // 로그아웃 처리
-        localStorage.removeItem('userToken');
-        window.location.href = '/login';
-    });
 });

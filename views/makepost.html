@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>게시글 작성</title>
+        <link rel="stylesheet" href="/css/makepost.css" />
+        <link rel="stylesheet" href="/css/header.css" />
+    </head>
+    <body>
+        <div class="container">
+            <script type="module">
+                import headerHtml from '/js/header.js';
+                document.body.insertAdjacentHTML('afterbegin', headerHtml);
+            </script>
+            <h1 class="title">게시글 작성</h1>
+            <form id="post-form">
+                <div class="form-group">
+                    <label for="title">제목*</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        maxlength="27"
+                        placeholder="제목을 입력해주세요. (최대 26자)"
+                        required
+                    />
+                    <div class="error-message" id="title-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="content">내용*</label>
+                    <textarea
+                        id="content"
+                        name="content"
+                        placeholder="내용을 입력해주세요."
+                        required
+                    ></textarea>
+                    <div class="error-message" id="content-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="image">이미지</label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    class="submit-btn"
+                    id="submit-btn"
+                    disabled
+                >
+                    완료
+                </button>
+            </form>
+        </div>
+        <script src="/js/makepost.js"></script>
+    </body>
+</html>

@@ -20,6 +20,10 @@ router.get('/signin', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/signin.html'));
 });
 
+router.get('/makepost', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/makepost.html'));
+});
+
 router.get('/post/:post_id', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/post.html'));
 });

@@ -11,29 +11,18 @@
         <script type="module" src="/js/indexScript.js"></script>
         <script type="module" src="/js/header.js"></script>
         <div class="container">
-            <header class="header">
-                <h1>아무 말 대잔치</h1>
-                <div class="profile-container">
-                    <div class="profile-icon"></div>
-                    <!-- 드롭다운 메뉴 -->
-                    <div class="dropdown-menu hidden">
-                        <ul>
-                            <li><a href="/profile">프로필</a></li>
-                            <li><a href="/my-posts">내 게시글</a></li>
-                            <li><a href="/settings">설정</a></li>
-                            <li><button id="logout-btn">로그아웃</button></li>
-                        </ul>
-                    </div>
-                </div>
-            </header>
-
+            <!-- supposed to be header here -->
+            <script type="module">
+                import headerHtml from '/js/header.js';
+                document.body.insertAdjacentHTML('afterbegin', headerHtml);
+            </script>
             <div class="welcome-message">
                 <p>안녕하세요,</p>
                 <p>아무 말 대잔치 게시판입니다.</p>
             </div>
 
             <div class="button-container">
-                <button class="write-button">게시글 작성</button>
+                <a href="/makepost" class="write-button">게시글 작성</a>
             </div>
 
             <div class="posts">
