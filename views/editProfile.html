@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>회원가입</title>
+        <link rel="stylesheet" href="/css/editProfile.css" />
+        <link rel="stylesheet" href="/css/header.css" />
+    </head>
+
+    <body>
+        <header>
+            <script type="module">
+                import headerHtml from '/js/header.js';
+                document.body.insertAdjacentHTML('afterbegin', headerHtml);
+            </script>
+        </header>
+        <main>
+            <h2>회원정보수정</h2>
+            <h3>프로필 사진*</h3>
+            <section class="profile-container">
+                <div class="profile-picture" id="profilePicture">
+                    <input type="file" id="fileInput" accept="image/*" hidden />
+                    <div class="change-text">변경</div>
+                </div>
+                <form class="edit-form">
+                    <label for="email">이메일</label>
+                    <div style="font-size: 14px">testEmail</div>
+                    <label for="nickname">닉네임</label>
+                    <input
+                        type="text"
+                        id="nickname"
+                        placeholder="testNickname"
+                    />
+                    <div id="nicknameError" class="error-message"></div>
+                    <button type="submit" class="edit-button">수정하기</button>
+                    <button id="quitButton">회원 탈퇴</button>
+                </form>
+            </section>
+        </main>
+        <div id="confirmQuitModal" class="modal">
+            <div class="modal-content">
+                <h2>회원 탈퇴 확인</h2>
+                <p>정말로 회원 탈퇴를 하시겠습니까?</p>
+                <div class="modal-buttons">
+                    <button id="confirmQuitButton">확인</button>
+                    <button id="cancelQuitButton">취소</button>
+                </div>
+            </div>
+        </div>
+        <script src="/js/editProfile.js"></script>
+    </body>
+</html>

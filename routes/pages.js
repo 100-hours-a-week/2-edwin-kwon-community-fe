@@ -28,4 +28,8 @@ router.get('/post/:post_id', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/post.html'));
 });
 
+router.get('/editprofile', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/editProfile.html'));
+});
+
 export default router;

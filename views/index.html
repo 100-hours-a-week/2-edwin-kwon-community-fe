@@ -9,32 +9,31 @@
     </head>
     <body>
         <script type="module" src="/js/indexScript.js"></script>
-        <script type="module" src="/js/header.js"></script>
+        <!-- supposed to be header here -->
+        <script type="module">
+            import headerHtml from '/js/header.js';
+            document.body.insertAdjacentHTML('afterbegin', headerHtml);
+        </script>
         <div class="container">
-            <!-- supposed to be header here -->
-            <script type="module">
-                import headerHtml from '/js/header.js';
-                document.body.insertAdjacentHTML('afterbegin', headerHtml);
-            </script>
             <div class="welcome-message">
-                <p>안녕하세요,</p>
-                <p>아무 말 대잔치 게시판입니다.</p>
+                <span>안녕하세요,<br /></span>
+                <span>아무 말 대잔치</span>
+                <span style="font-weight: 700">게시판</span>
+                <span>입니다.</span>
             </div>
 
-            <div class="button-container">
-                <a href="/makepost" class="write-button">게시글 작성</a>
-            </div>
+            <a href="/makepost" class="write-button">게시글 작성</a>
 
             <div class="posts">
                 <div class="post">
                     <div class="post-header">
                         <div class="post-title">제목 1</div>
-                        <div class="post-date">2024-10-29 00:00:00</div>
                     </div>
                     <div class="post-stats">
                         <span class="likes">좋아요 1200</span>
                         <span class="comments">댓글 15000</span>
                         <span class="views">조회수 120000</span>
+                        <div class="post-date">2024-10-29 00:00:00</div>
                     </div>
                     <div class="user-info">
                         <div class="user-avatar"></div>

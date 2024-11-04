@@ -11,14 +11,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 프로필 아이콘 클릭 이벤트
     profileIcon.addEventListener('click', function (e) {
-        if (checkLoginStatus()) {
-            // 로그인 상태: 드롭다운 토글
-            dropdownMenu.classList.toggle('hidden');
-        } else {
-            // 비로그인 상태: 로그인 페이지로 이동
-            console.log('로그인 페이지로 이동', window.location.href);
-            window.location.href = '/login';
-        }
+        dropdownMenu.classList.toggle('hidden');
+
+        // if (checkLoginStatus()) {
+        //     // 로그인 상태: 드롭다운 토글
+        //     dropdownMenu.classList.toggle('hidden');
+        // } else {
+        //     // 비로그인 상태: 로그인 페이지로 이동
+        //     console.log('로그인 페이지로 이동', window.location.href);
+        //     window.location.href = '/login';
+        // }
     });
 
     // 드롭다운 외부 클릭시 닫기
@@ -34,8 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // 로그아웃 버튼 클릭 이벤트
     logoutBtn.addEventListener('click', function () {
         // 로그아웃 처리
-        localStorage.removeItem('userToken');
-        window.location.href = '/login';
+        // localStorage.removeItem('userToken');
+        // window.location.href = '/login';
     });
 });
 
@@ -50,9 +52,8 @@ const headerHtml = `
         <!-- 드롭다운 메뉴 -->
         <div class="dropdown-menu hidden">
             <ul>
-                <li><a href="/profile">프로필</a></li>
-                <li><a href="/my-posts">내 게시글</a></li>
-                <li><a href="/settings">설정</a></li>
+                <li><button onclick="window.location.href='/editProfile'">회원정보수정</button></li>
+                <li><button onclick="window.location.href='/editPassword'">비밀번호수정</button></li>
                 <li><button id="logout-btn">로그아웃</button></li>
             </ul>
         </div>

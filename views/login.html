@@ -1,21 +1,23 @@
 <!doctype html>
 <html>
     <head>
-        <title>아무 말 대잔치</title>
+        <title>로그인</title>
         <link rel="stylesheet" href="/css/login.css" />
+        <link rel="stylesheet" href="/css/header.css" />
     </head>
     <body>
-        <header class="header">
-            <h1 onclick="window.location.href='/'" style="cursor: pointer">
-                아무 말 대잔치
-            </h1>
+        <header>
+            <script type="module">
+                import headerHtml from '/js/header.js';
+                document.body.insertAdjacentHTML('afterbegin', headerHtml);
+            </script>
         </header>
 
         <div class="login-container">
             <h2 class="login-title">로그인</h2>
             <form class="login-form">
                 <div class="input-group">
-                    <label>아이디</label>
+                    <label>이메일</label>
                     <input type="text" placeholder="이메일을 입력하세요" />
                 </div>
                 <div class="input-group">
@@ -24,8 +26,20 @@
                         type="password"
                         placeholder="비밀번호를 입력하세요"
                     />
+                    <span
+                        class="error-message"
+                        style="
+                            color: red;
+                            display: none;
+                            font-size: 12px;
+                            font-weight: 400;
+                        "
+                    >
+                        비밀번호를 입력해 주세요.
+                    </span>
                 </div>
-                <button type="submit" class="login-button">로그인</button>
+
+                <button type="button" class="login-button">로그인</button>
                 <button
                     type="button"
                     class="register-button"
@@ -35,5 +49,6 @@
                 </button>
             </form>
         </div>
+        <script type="module" src="/js/login.js"></script>
     </body>
 </html>

@@ -19,7 +19,10 @@
             <article class="post">
                 <h2 id="post-title">제목 로딩 중...</h2>
                 <div class="post-meta">
-                    <span id="post-author">작성자 로딩 중...</span>
+                    <div class="user-info">
+                        <div class="user-avatar"></div>
+                        <span id="post-author">작성자 로딩 중...</span>
+                    </div>
                     <span id="post-date">날짜 로딩 중...</span>
                     <div class="action-buttons">
                         <button id="edit-button">수정</button>
@@ -36,9 +39,7 @@
                     <p id="post-content">내용 로딩 중...</p>
                 </div>
                 <div class="post-stats">
-                    <div id="like-count" class="stat">
-                        <span>0</span> 좋아요
-                    </div>
+                    <div id="like-count" class="stat">0 좋아요</div>
                     <div id="view-count" class="stat">0 조회수</div>
                     <div id="comment-cnt" class="stat">0 댓글</div>
                 </div>
@@ -47,7 +48,7 @@
             <section class="comments">
                 <textarea
                     id="comment-input"
-                    placeholder="댓글을 남겨주세요"
+                    placeholder="댓글을 남겨주세요!"
                 ></textarea>
                 <button type="submit" id="submit-comment">댓글 등록</button>
 
@@ -57,6 +58,6 @@
             </section>
         </main>
 
-        <script src="/js/post.js"></script>
+        <script type="module" src="/js/post.js"></script>
     </body>
 </html>

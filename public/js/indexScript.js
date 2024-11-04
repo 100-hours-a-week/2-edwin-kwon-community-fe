@@ -1,3 +1,5 @@
+import utils from './utils.js';
+
 const API_BASE_URL = 'http://localhost:8000';
 
 // API 호출 관련 함수들
@@ -33,35 +35,6 @@ const api = {
     },
 };
 
-// 유틸리티 함수들
-const utils = {
-    // 숫자 포맷팅
-    formatNumber(number) {
-        if (number >= 100000) return `${Math.floor(number / 1000)}k`;
-        if (number >= 10000) return `${Math.floor(number / 1000)}k`;
-        if (number >= 1000) return `${Math.floor(number / 1000)}k`;
-        return number.toString();
-    },
-
-    // 날짜 포맷팅
-    formatDate(dateString) {
-        const date = new Date(dateString);
-        return date
-            .toLocaleString('ko-KR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false,
-            })
-            .replace(/\./g, '-')
-            .replace(/\s/g, '')
-            .replace(',', '');
-    },
-};
-
 // DOM 조작 관련 함수들
 const domHandler = {
     // 게시글 HTML 생성
@@ -77,8 +50,8 @@ const domHandler = {
                         <span class="likes">좋아요 ${utils.formatNumber(post.like_cnt)}</span>
                         <span class="comments">댓글 ${utils.formatNumber(post.comment_cnt)}</span>
                         <span class="views">조회수 ${utils.formatNumber(post.view_cnt)}</span>
+                        <span class="post-date">${utils.formatDate(post.write_time)}</span>
                     </div>
-                    <div class="post-date">${utils.formatDate(post.write_time)}</div>
                 </div>
                 <div class="user-info">
                     <div class="user-avatar"></div>
@@ -125,19 +98,6 @@ document.addEventListener('DOMContentLoaded', function () {
             domHandler.toggleWriteForm(),
         );
     }
-
-    // 호버 효과
-    document.addEventListener('mouseover', function (e) {
-        if (e.target.classList.contains('write-button')) {
-            e.target.style.backgroundColor = '#7F6AEE';
-        }
-    });
-
-    document.addEventListener('mouseout', function (e) {
-        if (e.target.classList.contains('write-button')) {
-            e.target.style.backgroundColor = '#ACA0EB';
-        }
-    });
 });
 
 // 에러 처리를 위한 전역 핸들러

@@ -36,15 +36,25 @@ main {
     object-fit: cover;
 }
 
-.upload-icon {
-    font-size: 2em;
-    color: #888;
+.change-text {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    width: 52px;
+    height: 27px;
+    border-radius: 25px;
+    border: 1px solid #ffffff;
+    text-align: center;
+    pointer-events: none; /* Prevent the text from interfering with click events */
+    line-height: 27px;
 }
 
 h2 {
     font-size: 32px;
     font-weight: 700;
-    margin: 200px 0;
+    margin: 150px 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,28 +63,35 @@ h2 {
 h3 {
     font-size: 15px;
     font-weight: 700;
-    margin-top: -200px;
+    margin-top: -140px;
 }
 
-.signup-form {
+.edit-form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 
-.signup-form label {
+.edit-form label {
     text-align: left;
     font-weight: bold;
 }
 
-.signup-form input {
+.edit-form input {
     padding: 10px;
     font-size: 1em;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-.signup-button {
+.error-message {
+    color: red;
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: -20px;
+}
+
+.edit-button {
     background-color: #a185ff;
     color: white;
     padding: 10px;
@@ -85,12 +102,29 @@ h3 {
     margin-top: 10px;
 }
 
-#loginButton {
+#quitButton {
     background: none;
     border: none;
     color: #888;
     cursor: pointer;
-    margin-top: 2px;
-    text-decoration: underline;
     align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.toast-message {
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #aca0eb;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 400;
+    z-index: 1000;
+    animation:
+        fadeIn 0.3s,
+        fadeOut 0.3s 2.7s;
 }

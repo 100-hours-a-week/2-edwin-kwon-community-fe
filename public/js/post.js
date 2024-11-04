@@ -1,3 +1,5 @@
+import utils from './utils.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
     const postId = window.location.pathname.split('/').pop(); // URL에서 post_id 추출
     try {
@@ -14,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error('Network response was not ok');
         }
         const user = await userResponse.json();
-        console.log('debug : user.', user);
 
         // HTML 요소에 포스트 정보 추가
         document.getElementById('post-title').innerText = post.title;
@@ -22,16 +23,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // 텍스트와 함께 숫자를 표시
         document.getElementById('like-count').innerText =
-            `${post.like_cnt}\n 좋아요수`;
+            `${utils.formatNumber(post.like_cnt)}\n 좋아요수`;
         document.getElementById('view-count').innerText =
-            `${post.view_cnt}\n 조회수`;
+            `${utils.formatNumber(post.view_cnt)}\n 조회수`;
         document.getElementById('comment-cnt').innerText =
-            `${post.comment_cnt}\n 댓글`;
+            `${utils.formatNumber(post.comment_cnt)}\n 댓글`;
 
         document.getElementById('post-author').innerText = user.nickname;
-        document.getElementById('post-date').innerText = new Date(
+        document.getElementById('post-date').innerText = utils.formatDate(
             post.write_time,
-        ).toLocaleString(); // 작성 시간 포맷
+        );
     } catch (error) {
         console.error('Error fetching post:', error);
     }
