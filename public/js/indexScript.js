@@ -40,7 +40,7 @@ const domHandler = {
     // 게시글 HTML 생성
     async createPostElement(post) {
         const nickname = await fetchNickname(post.writer_id);
-        const postUrl = `/post/${post.board_id}`;
+        const postUrl = `/posts/${post.board_id}`;
 
         return `
             <a href="${postUrl}" div class="post" data-post-id="${post.id}">

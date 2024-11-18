@@ -25,7 +25,12 @@
                     </div>
                     <span id="post-date">날짜 로딩 중...</span>
                     <div class="action-buttons">
-                        <button id="edit-button">수정</button>
+                        <button
+                            onclick="window.location.href='/editpost';"
+                            id="edit-button"
+                        >
+                            수정
+                        </button>
                         <button id="delete-button">삭제</button>
                     </div>
                 </div>
@@ -57,7 +62,16 @@
                 </div>
             </section>
         </main>
-
+        <div id="confirmDelModal" class="modal">
+            <div class="modal-content">
+                <h2>회원탈퇴 하시겠습니까?</h2>
+                <p>작성된 게시글과 댓글은 삭제됩니다.</p>
+                <div class="modal-buttons">
+                    <button id="cancelDelButton">취소</button>
+                    <button id="confirmDelButton">확인</button>
+                </div>
+            </div>
+        </div>
         <script type="module" src="/js/post.js"></script>
     </body>
 </html>

@@ -20,16 +20,24 @@ router.get('/signin', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/signin.html'));
 });
 
-router.get('/makepost', (req, res) => {
+router.get('/posts/make', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/makepost.html'));
 });
 
-router.get('/post/:post_id', (req, res) => {
+router.get('/posts/:post_id', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/post.html'));
 });
 
 router.get('/editprofile', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/editProfile.html'));
+});
+
+router.get('/editpassword', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/editPassword.html'));
+});
+
+router.get('/editpost', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/editPost.html'));
 });
 
 export default router;

@@ -52,18 +52,21 @@ document.addEventListener('DOMContentLoaded', () => {
         showToastMessage('수정완료');
     });
 
-    quitButton.addEventListener('click', () => {
-        confirmQuitModal.style.display = 'block';
+    // 회원 탈퇴 버튼 클릭 시
+    quitButton.addEventListener('click', e => {
+        e.preventDefault(); // 폼 제출 방지
+        confirmQuitModal.classList.add('show'); // show 클래스 추가
     });
 
-    confirmQuitButton.addEventListener('click', () => {
-        // Handle user quitting/deleting their account
-        console.log('회원 탈퇴 처리');
-        confirmQuitModal.style.display = 'none';
-    });
-
+    // 취소 버튼 클릭 시
     cancelQuitButton.addEventListener('click', () => {
-        confirmQuitModal.style.display = 'none';
+        confirmQuitModal.classList.remove('show'); // show 클래스 제거
+    });
+
+    // 확인 버튼 클릭 시
+    confirmQuitButton.addEventListener('click', () => {
+        // 회원 탈퇴 처리 로직
+        confirmQuitModal.classList.remove('show'); // show 클래스 제거
     });
 });
 
