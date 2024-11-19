@@ -9,6 +9,7 @@ const utils = {
 
     // 날짜 포맷팅
     formatDate(dateString) {
+        console.log('debug : dateString.', dateString);
         const date = new Date(dateString);
         return date
             .toLocaleString('ko-KR', {
