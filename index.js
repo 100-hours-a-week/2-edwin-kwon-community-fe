@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 // 정적 파일 제공
 app.use(express.static('public'));
+app.use('/src', express.static(path.join(__dirname, 'src')));
 
 // body parser 미들웨어
 app.use(express.json());
