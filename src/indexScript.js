@@ -1,6 +1,5 @@
 import utils from './utils.js';
-
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+import API_BASE_URL from './env.js';
 
 const api = {
     // 게시글 목록 조회
@@ -22,7 +21,7 @@ const api = {
 const domHandler = {
     // 게시글 HTML 생성
     async createPostElement(post) {
-        const postUrl = `/posts/${post.board_id}`;
+        const postUrl = `/posts/${post.post_id}`;
 
         return `
             <a href="${postUrl}" div class="post" data-post-id="${post.id}">

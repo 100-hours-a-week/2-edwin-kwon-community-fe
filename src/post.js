@@ -1,4 +1,5 @@
 import utils from './utils.js';
+import API_BASE_URL from './env.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const postId = window.location.pathname.split('/').pop(); // URL에서 post_id 추출
@@ -7,14 +8,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const confirmQuitButton = document.getElementById('confirmDelButton');
     const cancelQuitButton = document.getElementById('cancelDelButton');
     try {
-        const response = await fetch(`http://localhost:8000/posts/${postId}`);
+        const response = await fetch(`${API_BASE_URL}/posts/${postId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         const post = await response.json();
 
         const userResponse = await fetch(
-            `http://localhost:8000/users/${post.writer_id}`,
+            `${API_BASE_URL}/users/${post.member_id}`,
         );
         if (!userResponse.ok) {
             throw new Error('Network response was not ok');
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('post-author').innerText = user.nickname;
         document.getElementById('post-date').innerText = utils.formatDate(
-            post.write_time,
+            post.created_at,
         );
     } catch (error) {
         console.error('Error fetching post:', error);
