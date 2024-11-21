@@ -115,7 +115,7 @@ main {
     resize: none;
 }
 
-.comments button {
+#submit-comment-button {
     display: block;
     width: 138px;
     height: 39px;
@@ -237,4 +237,65 @@ main {
 
 #cancelQuitButton:hover {
     background-color: #ccc;
+}
+
+/* 댓글 스타일 */
+.comment {
+    margin-top: 15px;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between; /* 변경: flex-start에서 space-between으로 */
+    align-items: center; /* 변경: flex-end에서 center로 */
+    gap: 15px;
+}
+
+/* 새로운 클래스 추가 */
+.comment-user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.comment-author {
+    font-weight: 700;
+    font-size: 15px;
+    color: #333;
+}
+
+.comment-date {
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+}
+
+.comment-text {
+    font-size: 15px;
+    font-weight: 400;
+    color: #333;
+    margin: 8px 0;
+    margin-left: 50px;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.comment-actions button {
+    background: none;
+    border: 1px solid #aca0eb;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 15px;
+    font-weight: 400;
+    color: #333;
+    cursor: pointer;
 }

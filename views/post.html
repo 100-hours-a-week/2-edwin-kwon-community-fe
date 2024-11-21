@@ -55,20 +55,37 @@
                     id="comment-input"
                     placeholder="댓글을 남겨주세요!"
                 ></textarea>
-                <button type="submit" id="submit-comment">댓글 등록</button>
+                <button
+                    id="submit-comment-button"
+                    type="submit"
+                    id="submit-comment"
+                >
+                    댓글 등록
+                </button>
 
                 <div id="comments-section">
                     <!-- 댓글들이 여기 들어갑니다. -->
                 </div>
             </section>
         </main>
-        <div id="confirmDelModal" class="modal">
+        <div id="postDeleteModal" class="modal">
             <div class="modal-content">
-                <h2>회원탈퇴 하시겠습니까?</h2>
-                <p>작성된 게시글과 댓글은 삭제됩니다.</p>
+                <h2>게시글을 삭제하시겠습니까?</h2>
+                <p>삭제한 내용은 복구할 수 없습니다.</p>
                 <div class="modal-buttons">
-                    <button id="cancelDelButton">취소</button>
-                    <button id="confirmDelButton">확인</button>
+                    <button id="cancelPostDeleteButton">취소</button>
+                    <button id="confirmPostDeleteButton">확인</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="commentDeleteModal" class="modal">
+            <div class="modal-content">
+                <h2>댓글을 삭제하시겠습니까?</h2>
+                <p>삭제한 내용은 복구할 수 없습니다.</p>
+                <div class="modal-buttons">
+                    <button id="cancelCommentDeleteButton">취소</button>
+                    <button id="confirmCommentDeleteButton">확인</button>
                 </div>
             </div>
         </div>

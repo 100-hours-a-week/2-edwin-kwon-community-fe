@@ -7,6 +7,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     const confirmQuitModal = document.getElementById('confirmDelModal');
     const confirmQuitButton = document.getElementById('confirmDelButton');
     const cancelQuitButton = document.getElementById('cancelDelButton');
+    const commentInput = document.getElementById('comment-input');
+    const submitCommentButton = document.getElementById('submit-comment');
+    const commentsSection = document.getElementById('comments-section');
+
+    // 전역 스코프에서 editComment와 deleteComment 함수 정의
+    window.editComment = async commentId => {
+        try {
+            const newContent = prompt('댓글을 수정하세요:');
+            if (!newContent) return;
+
+            const response = await fetch(
+                `${API_BASE_URL}/comments/${commentId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: newContent,
+                    }),
+                },
+            );
+
+            if (!response.ok) throw new Error('댓글 수정에 실패했습니다.');
+            await loadComments(postId);
+        } catch (error) {
+            console.error('댓글 수정 중 오류:', error);
+        }
+    };
+
+    window.deleteComment = async commentId => {
+        try {
+            if (!confirm('댓글을 삭제하시겠습니까?')) return;
+
+            const response = await fetch(
+                `${API_BASE_URL}/comments/${commentId}`,
+                {
+                    method: 'DELETE',
+                },
+            );
+
+            if (!response.ok) throw new Error('댓글 삭제에 실패했습니다.');
+            await loadComments(postId);
+        } catch (error) {
+            console.error('댓글 삭제 중 오류:', error);
+        }
+    };
+
     try {
         const response = await fetch(`${API_BASE_URL}/posts/${postId}`);
         if (!response.ok) {
@@ -38,23 +86,103 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('post-date').innerText = utils.formatDate(
             post.created_at,
         );
+
+        // 댓글 로딩
+        await loadComments(postId);
+
+        // 댓글 등록 이벤트 리스너
+        submitCommentButton.addEventListener('click', async () => {
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                await submitComment(postId, commentText);
+                commentInput.value = ''; // 입력란 초기화
+                await loadComments(postId); // 댓글 다시 로딩
+            }
+        });
     } catch (error) {
         console.error('Error fetching post:', error);
     }
-    // 회원 탈퇴 버튼 클릭 시
+
+    // 기존 모달 관련 이벤트 리스너들
     quitButton.addEventListener('click', e => {
-        e.preventDefault(); // 폼 제출 방지
-        confirmQuitModal.classList.add('show'); // show 클래스 추가
+        e.preventDefault();
+        confirmQuitModal.classList.add('show');
     });
 
-    // 취소 버튼 클릭 시
     cancelQuitButton.addEventListener('click', () => {
-        confirmQuitModal.classList.remove('show'); // show 클래스 제거
+        confirmQuitModal.classList.remove('show');
     });
 
-    // 확인 버튼 클릭 시
     confirmQuitButton.addEventListener('click', () => {
-        // 회원 탈퇴 처리 로직
-        confirmQuitModal.classList.remove('show'); // show 클래스 제거
+        confirmQuitModal.classList.remove('show');
     });
+
+    // 댓글 로딩 함수
+    async function loadComments() {
+        try {
+            const commentsResponse = await fetch(
+                `${API_BASE_URL}/posts/${postId}/comments/`,
+            );
+            if (!commentsResponse.ok) {
+                throw new Error('댓글을 불러오는 데 실패했습니다.');
+            }
+            const comments = await commentsResponse.json();
+
+            // 댓글 섹션 초기화
+            commentsSection.innerHTML = '';
+
+            // 각 댓글에 대해 HTML 생성
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.classList.add('comment');
+                commentElement.innerHTML = `
+                    <div class="comment-header">
+                        <div class="comment-user-info">
+                            <div class="user-avatar">
+                            <img src="${comment.profile_img}" class="avatar">
+                        </div>
+                        <span class="comment-author">${comment.nickname}</span>
+                        <span class="comment-date">${utils.formatDate(comment.created_at)}</span>
+                    </div>
+                        <div class="comment-actions">
+                        <button onclick="editComment(${comment.id})">수정</button>
+                        <button onclick="deleteComment(${comment.id})">삭제</button>
+                        </div>
+                    </div>
+                    <div class="comment-text">${comment.content}</div>
+                `;
+                commentsSection.appendChild(commentElement);
+            });
+
+            // 댓글 수 업데이트
+            document.getElementById('comment-cnt').innerText =
+                `${utils.formatNumber(comments.length)}\n 댓글`;
+        } catch (error) {
+            console.error('댓글 로딩 중 오류:', error);
+        }
+    }
+
+    // 댓글 제출 함수
+    async function submitComment(postId, commentText) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/comments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    post_id: postId,
+                    content: commentText,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('댓글 등록에 실패했습니다.');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('댓글 제출 중 오류:', error);
+        }
+    }
 });
