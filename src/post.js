@@ -3,13 +3,41 @@ import API_BASE_URL from './env.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const postId = window.location.pathname.split('/').pop(); // URL에서 post_id 추출
-    const quitButton = document.getElementById('deleteButton');
-    const confirmQuitModal = document.getElementById('confirmDelModal');
-    const confirmQuitButton = document.getElementById('confirmDelButton');
-    const cancelQuitButton = document.getElementById('cancelDelButton');
     const commentInput = document.getElementById('comment-input');
     const submitCommentButton = document.getElementById('submit-comment');
     const commentsSection = document.getElementById('comments-section');
+    const deleteButton = document.getElementById('delete-button');
+    const postDeleteModal = document.getElementById('postDeleteModal');
+    const confirmPostDeleteButton = document.getElementById(
+        'confirmPostDeleteButton',
+    );
+    const cancelPostDeleteButton = document.getElementById(
+        'cancelPostDeleteButton',
+    );
+
+    deleteButton.addEventListener('click', e => {
+        e.preventDefault();
+        postDeleteModal.classList.add('show');
+    });
+
+    cancelPostDeleteButton.addEventListener('click', () => {
+        postDeleteModal.classList.remove('show');
+    });
+
+    confirmPostDeleteButton.addEventListener('click', async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) throw new Error('게시글 삭제에 실패했습니다.');
+
+            window.location.href = '/'; // 삭제 후 메인 페이지로 이동
+        } catch (error) {
+            console.error('게시글 삭제 중 오류:', error);
+        }
+        postDeleteModal.classList.remove('show');
+    });
 
     // 전역 스코프에서 editComment와 deleteComment 함수 정의
     window.editComment = async commentId => {
@@ -102,20 +130,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error('Error fetching post:', error);
     }
-
-    // 기존 모달 관련 이벤트 리스너들
-    quitButton.addEventListener('click', e => {
-        e.preventDefault();
-        confirmQuitModal.classList.add('show');
-    });
-
-    cancelQuitButton.addEventListener('click', () => {
-        confirmQuitModal.classList.remove('show');
-    });
-
-    confirmQuitButton.addEventListener('click', () => {
-        confirmQuitModal.classList.remove('show');
-    });
 
     // 댓글 로딩 함수
     async function loadComments() {

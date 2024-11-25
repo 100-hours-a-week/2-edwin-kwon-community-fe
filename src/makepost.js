@@ -80,14 +80,12 @@ postForm.addEventListener('submit', async e => {
             },
             body: JSON.stringify(postData),
         });
-        const responseData = await response.json();
-        console.log('서버 응답:', responseData);
         if (!response.ok) {
             throw new Error('서버 에러');
         }
 
         // 성공 처리
-        console.log('게시글이 성공적으로 등록되었습니다.');
+        window.location.href = '/';
     } catch (error) {
         console.error('에러 발생:', error);
     }
