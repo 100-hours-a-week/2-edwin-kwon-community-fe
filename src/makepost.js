@@ -1,3 +1,5 @@
+import API_BASE_URL from './env.js';
+
 const titleInput = document.getElementById('title');
 const contentInput = document.getElementById('content');
 const submitBtn = document.getElementById('submit-btn');
@@ -36,4 +38,57 @@ function checkInputs() {
 const fileInput = document.getElementById('image');
 fileInput.addEventListener('change', () => {
     // Code to handle file upload
+});
+
+const postForm = document.getElementById('post-form');
+// 파일을 Base64로 변환하는 함수
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+
+// 폼 제출 이벤트 핸들러
+postForm.addEventListener('submit', async e => {
+    e.preventDefault();
+
+    const title = titleInput.value.trim();
+    const content = contentInput.value.trim();
+
+    try {
+        let imageBase64 = null;
+
+        // 파일이 선택되었다면 Base64로 변환
+        if (fileInput.files[0]) {
+            imageBase64 = await getBase64(fileInput.files[0]);
+        }
+        console.log(title, content);
+        const postData = {
+            title,
+            content,
+            img: imageBase64,
+        };
+        // JSON 형태로 전송
+        const response = await fetch(`${API_BASE_URL}/posts`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+            body: JSON.stringify(postData),
+        });
+        const responseData = await response.json();
+        console.log('서버 응답:', responseData);
+        if (!response.ok) {
+            throw new Error('서버 에러');
+        }
+
+        // 성공 처리
+        console.log('게시글이 성공적으로 등록되었습니다.');
+    } catch (error) {
+        console.error('에러 발생:', error);
+    }
 });
