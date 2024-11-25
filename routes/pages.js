@@ -36,7 +36,7 @@ router.get('/editpassword', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/editPassword.html'));
 });
 
-router.get('/editpost', (req, res) => {
+router.get('/posts/:post_id/editpost', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/editPost.html'));
 });
 

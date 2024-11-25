@@ -26,8 +26,8 @@
                     <span id="post-date">날짜 로딩 중...</span>
                     <div class="action-buttons">
                         <button
-                            onclick="window.location.href='/editpost';"
                             id="edit-button"
+                            onclick="window.location.href=`/posts/${window.location.pathname.split('/')[2]}/editpost`;"
                         >
                             수정
                         </button>

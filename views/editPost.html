@@ -10,7 +10,7 @@
     <body>
         <div class="container">
             <script type="module">
-                import headerHtml from '../src/header.js';
+                import headerHtml from '/src/header.js';
                 document.body.insertAdjacentHTML('afterbegin', headerHtml);
             </script>
             <h1 class="title">게시글 수정</h1>
@@ -57,6 +57,6 @@
                 </button>
             </form>
         </div>
-        <script src="../src/makepost.js"></script>
+        <script type="module" src="/src/editPost.js"></script>
     </body>
 </html>
