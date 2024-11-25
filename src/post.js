@@ -179,16 +179,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 댓글 제출 함수
     async function submitComment(postId, commentText) {
         try {
-            const response = await fetch(`${API_BASE_URL}/comments`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+            const response = await fetch(
+                `${API_BASE_URL}/posts/${postId}/comments`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: commentText,
+                    }),
                 },
-                body: JSON.stringify({
-                    post_id: postId,
-                    content: commentText,
-                }),
-            });
+            );
 
             if (!response.ok) {
                 throw new Error('댓글 등록에 실패했습니다.');
