@@ -1,6 +1,8 @@
 import utils from './utils.js';
 import API_BASE_URL from './env.js';
 
+let isLiked;
+
 document.addEventListener('DOMContentLoaded', async () => {
     const postId = window.location.pathname.split('/').pop(); // URL에서 post_id 추출
     const commentInput = document.getElementById('comment-input');
@@ -46,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!newContent) return;
 
             const response = await fetch(
-                `${API_BASE_URL}/comments/${commentId}`,
+                `${API_BASE_URL}/posts/${postId}/comments/${commentId}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -139,20 +141,35 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const user = await userResponse.json();
 
+        const likeListResponse = await fetch(
+            `${API_BASE_URL}/posts/${postId}/like`,
+        );
+
+        if (!likeListResponse.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const likeList = await likeListResponse.json();
+
+        // 좋아요 여부 확인
+        isLiked = likeList.data.some(like => like.member_id === 1);
+
         // HTML 요소에 포스트 정보 추가
         document.getElementById('post-title').innerText = post.title;
         document.getElementById('post-content').innerText = post.content;
 
         // 좋아요 버튼 업데이트
         const likeButton = document.getElementById('like-button');
-        likeButton.innerText = `${utils.formatNumber(post.like_cnt)}\n 좋아요수`;
-        likeButton.addEventListener('click', () => toggleLike(postId));
+        likeButton.innerText = `${utils.formatNumber(likeList.data.length)}\n 좋아요수`;
+        if (isLiked) {
+            likeButton.classList.add('liked');
+        } else {
+            likeButton.classList.remove('liked');
+        }
+        likeButton.addEventListener('click', () => toggleLike());
 
         // 텍스트와 함께 숫자를 표시
         document.getElementById('view-count').innerText =
             `${utils.formatNumber(post.view_cnt)}\n 조회수`;
-        document.getElementById('comment-cnt').innerText =
-            `${utils.formatNumber(post.comment_cnt)}\n 댓글`;
 
         document.getElementById('post-author').innerText = user.nickname;
         document.getElementById('post-date').innerText = utils.formatDate(
@@ -185,6 +202,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error('댓글을 불러오는 데 실패했습니다.');
             }
             const comments = await commentsResponse.json();
+
+            document.getElementById('comment-cnt').innerText =
+                `${utils.formatNumber(comments.length)}\n 댓글`;
 
             // 댓글 섹션 초기화
             commentsSection.innerHTML = '';
@@ -281,19 +301,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 좋아요 기능
-    async function toggleLike(postId) {
+    async function toggleLike() {
         try {
-            const response = await fetch(`/api/posts/${postId}/like`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const data = await response.json();
+            console.log('isLiked:', isLiked);
+            if (isLiked) {
+                const response = await fetch(
+                    `${API_BASE_URL}/posts/${postId}/like`,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    },
+                );
+                const data = await response.json();
+                const likeButton = document.getElementById('like-button');
+                likeButton.textContent = `${data.likeCnt} 좋아요`;
+                isLiked = false;
+                likeButton.classList.toggle('liked', isLiked);
+            } else {
+                const response = await fetch(
+                    `${API_BASE_URL}/posts/${postId}/like`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    },
+                );
+                const data = await response.json();
 
-            const likeButton = document.getElementById('like-button');
-            likeButton.textContent = `${data.likeCount} 좋아요`;
-            likeButton.classList.toggle('liked', data.isLiked);
+                const likeButton = document.getElementById('like-button');
+                likeButton.textContent = `${data.likeCnt} 좋아요`;
+                isLiked = true;
+                likeButton.classList.toggle('liked', isLiked);
+            }
         } catch (error) {
             console.error('좋아요 처리 실패:', error);
         }
