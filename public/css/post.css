@@ -322,3 +322,26 @@ main {
     color: #333;
     cursor: pointer;
 }
+
+#like-button {
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#like-button:hover {
+    background-color: #e0e0e0;
+}
+
+#like-button.liked {
+    background-color: #aca0eb;
+    color: white;
+}
+
+.editing {
+    background-color: #f8f8f8;
+}
+
+#submit-comment.edit-mode {
+    background-color: #4caf50;
+}

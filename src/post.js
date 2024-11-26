@@ -102,9 +102,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('post-title').innerText = post.title;
         document.getElementById('post-content').innerText = post.content;
 
+        // 좋아요 버튼 업데이트
+        const likeButton = document.getElementById('like-button');
+        likeButton.innerText = `${utils.formatNumber(post.like_cnt)}\n 좋아요수`;
+        likeButton.addEventListener('click', () => toggleLike(postId));
+
         // 텍스트와 함께 숫자를 표시
-        document.getElementById('like-count').innerText =
-            `${utils.formatNumber(post.like_cnt)}\n 좋아요수`;
         document.getElementById('view-count').innerText =
             `${utils.formatNumber(post.view_cnt)}\n 조회수`;
         document.getElementById('comment-cnt').innerText =
@@ -199,6 +202,56 @@ document.addEventListener('DOMContentLoaded', async () => {
             return await response.json();
         } catch (error) {
             console.error('댓글 제출 중 오류:', error);
+        }
+    }
+
+    // 댓글 수정 모드
+    function enterEditMode(commentId, commentText) {
+        const commentInput = document.getElementById('comment-input');
+        const submitButton = document.getElementById('submit-comment');
+        const editingCommentId = document.getElementById('editing-comment-id');
+
+        commentInput.value = commentText;
+        submitButton.textContent = '댓글 수정';
+        submitButton.classList.add('edit-mode');
+        editingCommentId.value = commentId;
+
+        // 스크롤을 댓글 입력창으로 이동
+        commentInput.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // 댓글 수정 제출
+    async function updateComment(commentId, newContent) {
+        try {
+            const response = await fetch(`/api/comments/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: newContent }),
+            });
+            // 성공 처리
+        } catch (error) {
+            console.error('댓글 수정 실패:', error);
+        }
+    }
+
+    // 좋아요 기능
+    async function toggleLike(postId) {
+        try {
+            const response = await fetch(`/api/posts/${postId}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+
+            const likeButton = document.getElementById('like-button');
+            likeButton.textContent = `${data.likeCount} 좋아요`;
+            likeButton.classList.toggle('liked', data.isLiked);
+        } catch (error) {
+            console.error('좋아요 처리 실패:', error);
         }
     }
 });
