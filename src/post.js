@@ -66,21 +66,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     window.deleteComment = async commentId => {
-        try {
-            if (!confirm('댓글을 삭제하시겠습니까?')) return;
+        const commentDeleteModal =
+            document.getElementById('commentDeleteModal');
+        const confirmCommentDeleteButton = document.getElementById(
+            'confirmCommentDeleteButton',
+        );
+        const cancelCommentDeleteButton = document.getElementById(
+            'cancelCommentDeleteButton',
+        );
 
-            const response = await fetch(
-                `${API_BASE_URL}/comments/${commentId}`,
-                {
-                    method: 'DELETE',
-                },
+        // 모달 표시
+        commentDeleteModal.classList.add('show');
+
+        // 이벤트 리스너 설정
+        const handleDelete = async () => {
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/posts/${postId}/comments/${commentId}`,
+                    {
+                        method: 'DELETE',
+                    },
+                );
+
+                if (!response.ok) throw new Error('댓글 삭제에 실패했습니다.');
+                await loadComments(postId);
+            } catch (error) {
+                console.error('댓글 삭제 중 오류:', error);
+            } finally {
+                commentDeleteModal.classList.remove('show');
+                // 이벤트 리스너 제거
+                confirmCommentDeleteButton.removeEventListener(
+                    'click',
+                    handleDelete,
+                );
+                cancelCommentDeleteButton.removeEventListener(
+                    'click',
+                    handleCancel,
+                );
+            }
+        };
+
+        const handleCancel = () => {
+            commentDeleteModal.classList.remove('show');
+            // 이벤트 리스너 제거
+            confirmCommentDeleteButton.removeEventListener(
+                'click',
+                handleDelete,
             );
+            cancelCommentDeleteButton.removeEventListener(
+                'click',
+                handleCancel,
+            );
+        };
 
-            if (!response.ok) throw new Error('댓글 삭제에 실패했습니다.');
-            await loadComments(postId);
-        } catch (error) {
-            console.error('댓글 삭제 중 오류:', error);
-        }
+        // 버튼에 이벤트 리스너 추가
+        confirmCommentDeleteButton.addEventListener('click', handleDelete);
+        cancelCommentDeleteButton.addEventListener('click', handleCancel);
     };
 
     try {
@@ -162,8 +203,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span class="comment-date">${utils.formatDate(comment.created_at)}</span>
                     </div>
                         <div class="comment-actions">
-                        <button onclick="editComment(${comment.id})">수정</button>
-                        <button onclick="deleteComment(${comment.id})">삭제</button>
+                        <button onclick="editComment(${comment.comment_id})">수정</button>
+                        <button onclick="deleteComment(${comment.comment_id})">삭제</button>
                         </div>
                     </div>
                     <div class="comment-text">${comment.content}</div>
@@ -223,13 +264,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 댓글 수정 제출
     async function updateComment(commentId, newContent) {
         try {
-            const response = await fetch(`/api/comments/${commentId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
+            const response = await fetch(
+                `${API_BASE_URL}/comments/${commentId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: newContent }),
                 },
-                body: JSON.stringify({ content: newContent }),
-            });
+            );
             // 성공 처리
         } catch (error) {
             console.error('댓글 수정 실패:', error);
