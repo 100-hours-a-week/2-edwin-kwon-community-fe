@@ -1,4 +1,4 @@
-import API_BASE_URL from './env.js';
+import { API_BASE_URL } from './env.js';
 
 // 프로필 이미지 업로드 및 삭제 기능
 const profilePicture = document.getElementById('profilePicture');

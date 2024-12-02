@@ -1,5 +1,5 @@
 import utils from './utils.js';
-import API_BASE_URL from './env.js';
+import { API_BASE_URL, PUBLIC_URL } from './env.js';
 
 let isLiked;
 
@@ -156,6 +156,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // HTML 요소에 포스트 정보 추가
         document.getElementById('post-title').innerText = post.title;
         document.getElementById('post-content').innerText = post.content;
+        document.getElementById('post-img').src = `${PUBLIC_URL}${post.img}`;
 
         // 좋아요 버튼 업데이트
         const likeButton = document.getElementById('like-button');
@@ -217,7 +218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="comment-header">
                         <div class="comment-user-info">
                             <div class="user-avatar">
-                            <img src="${comment.profile_img}" class="avatar">
+                            <img src="${comment.img}" class="avatar">
                         </div>
                         <span class="comment-author">${comment.nickname}</span>
                         <span class="comment-date">${utils.formatDate(comment.created_at)}</span>

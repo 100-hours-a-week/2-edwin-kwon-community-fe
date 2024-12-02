@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000';
+import { API_BASE_URL } from './env.js';
 
 async function getUser(emailInput, passwordInput) {
     try {

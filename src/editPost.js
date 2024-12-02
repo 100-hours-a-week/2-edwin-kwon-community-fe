@@ -1,4 +1,4 @@
-import API_BASE_URL from './env.js';
+import { API_BASE_URL } from './env.js';
 
 const postId = window.location.pathname.split('/')[2];
 const titleInput = document.getElementById('title');

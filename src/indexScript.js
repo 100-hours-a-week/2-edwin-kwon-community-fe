@@ -1,5 +1,5 @@
 import utils from './utils.js';
-import API_BASE_URL from './env.js';
+import { API_BASE_URL } from './env.js';
 
 const api = {
     // 게시글 목록 조회
