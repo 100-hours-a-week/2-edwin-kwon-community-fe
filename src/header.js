@@ -1,27 +1,38 @@
+import { API_BASE_URL, PUBLIC_URL } from './env.js';
+
 document.addEventListener('DOMContentLoaded', function () {
     const profileIcon = document.querySelector('.profile-icon');
     const dropdownMenu = document.querySelector('.dropdown-menu');
     const logoutBtn = document.getElementById('logout-btn');
 
-    // 로그인 상태 체크 함수
-    function checkLoginStatus() {
-        // 예: localStorage나 세션에서 토큰을 확인
-        return localStorage.getItem('userToken') !== null;
+    // 프로필 정보 가져오기
+    async function checkLoginStatus() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/img`, {
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                // 로그인 상태: 프로필 메뉴 활성화
+                profileIcon.style.backgroundImage = data.img
+                    ? `url(${PUBLIC_URL}${data.img})`
+                    : `url(${PUBLIC_URL}/images/default-profile.png)`;
+                // 프로필 아이콘 클릭 시 드롭다운 메뉴 표시
+                profileIcon.addEventListener('click', function (e) {
+                    dropdownMenu.classList.toggle('hidden');
+                });
+            } else {
+                // 비로그인 상태: 로그인 페이지로 이동하는 이벤트 추가
+                profileIcon.style.backgroundImage = null;
+                profileIcon.addEventListener('click', function () {
+                    window.location.href = '/login';
+                });
+            }
+        } catch (error) {
+            console.error('프로필 로딩 실패:', error);
+        }
     }
-
-    // 프로필 아이콘 클릭 이벤트
-    profileIcon.addEventListener('click', function (e) {
-        dropdownMenu.classList.toggle('hidden');
-
-        // if (checkLoginStatus()) {
-        //     // 로그인 상태: 드롭다운 토글
-        //     dropdownMenu.classList.toggle('hidden');
-        // } else {
-        //     // 비로그인 상태: 로그인 페이지로 이동
-        //     console.log('로그인 페이지로 이동', window.location.href);
-        //     window.location.href = '/login';
-        // }
-    });
 
     // 드롭다운 외부 클릭시 닫기
     document.addEventListener('click', function (e) {
@@ -34,11 +45,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 로그아웃 버튼 클릭 이벤트
-    logoutBtn.addEventListener('click', function () {
-        // 로그아웃 처리
-        // localStorage.removeItem('userToken');
-        // window.location.href = '/login';
+    logoutBtn.addEventListener('click', async function () {
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include',
+            });
+            if (response.ok) {
+                window.location.href = '/login';
+            }
+        } catch (error) {
+            console.error('로그아웃 실패:', error);
+        }
     });
+
+    // 초기 로그인 상태 확인
+    checkLoginStatus();
 });
 
 const headerHtml = `

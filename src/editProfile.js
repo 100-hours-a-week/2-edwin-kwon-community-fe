@@ -1,5 +1,7 @@
 // editProfile.js
 
+import { API_BASE_URL, PUBLIC_URL } from './env.js';
+
 function showToastMessage(message) {
     const toastElement = document.createElement('div');
     toastElement.classList.add('toast-message');
@@ -12,14 +14,48 @@ function showToastMessage(message) {
     }, 3000); // Hide the toast message after 3 seconds
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const form = document.querySelector('.edit-form');
     const nicknameInput = document.getElementById('nickname');
     const nicknameError = document.getElementById('nicknameError');
+    const emailDiv = document.querySelector('[for="email"] + div');
+    const profilePicture = document.getElementById('profilePicture');
+    const fileInput = document.getElementById('fileInput');
     const quitButton = document.getElementById('quitButton');
     const confirmQuitModal = document.getElementById('confirmQuitModal');
     const confirmQuitButton = document.getElementById('confirmQuitButton');
     const cancelQuitButton = document.getElementById('cancelQuitButton');
+
+    // 사용자 정보 불러오기
+    async function loadUserProfile() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/users/profile`, {
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                // 이메일 설정
+                emailDiv.textContent = userData.email;
+                // 닉네임 설정
+                nicknameInput.value = userData.nickname;
+                // 프로필 이미지 설정
+                if (userData.img) {
+                    profilePicture.style.backgroundImage = `url(${PUBLIC_URL}${userData.img})`;
+                    profilePicture.style.backgroundSize = 'cover';
+                    profilePicture.style.backgroundPosition = 'center';
+                }
+            } else {
+                // window.location.href = '/login';
+            }
+        } catch (error) {
+            console.error('프로필 로딩 실패:', error);
+            showToastMessage('프로필 정보를 불러오는데 실패했습니다.');
+        }
+    }
+
+    // 초기 프로필 정보 로드
+    await loadUserProfile();
 
     form.addEventListener('click', event => {
         // Prevent the form from submitting
@@ -68,27 +104,26 @@ document.addEventListener('DOMContentLoaded', () => {
         // 회원 탈퇴 처리 로직
         confirmQuitModal.classList.remove('show'); // show 클래스 제거
     });
-});
 
-// 프로필 이미지 업로드 및 삭제 기능
-const profilePicture = document.getElementById('profilePicture');
-const fileInput = document.getElementById('fileInput');
+    // 프로필 이미지 업로드 및 삭제 기능
+    profilePicture.addEventListener('click', () => {
+        fileInput.click();
+    });
 
-profilePicture.addEventListener('click', () => {
-    fileInput.click();
-});
-
-fileInput.addEventListener('change', e => {
-    if (e.target.files && e.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = event => {
-            profilePicture.style.backgroundImage = `url(${event.target.result})`;
-            profilePicture.querySelector('.upload-icon').style.display = 'none';
-        };
-        reader.readAsDataURL(e.target.files[0]);
-    } else {
-        // 파일이 선택되지 않은 경우 이미지 초기화
-        profilePicture.style.backgroundImage = 'none';
-        profilePicture.querySelector('.upload-icon').style.display = 'block';
-    }
+    fileInput.addEventListener('change', e => {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = event => {
+                profilePicture.style.backgroundImage = `url(${event.target.result})`;
+                profilePicture.querySelector('.upload-icon').style.display =
+                    'none';
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        } else {
+            // 파일이 선택되지 않은 경우 이미지 초기화
+            profilePicture.style.backgroundImage = 'none';
+            profilePicture.querySelector('.upload-icon').style.display =
+                'block';
+        }
+    });
 });

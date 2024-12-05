@@ -39,6 +39,9 @@
     border-radius: 50%;
     background-color: #ddd;
     cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* 드롭다운 메뉴 */

@@ -1,11 +1,25 @@
 import { API_BASE_URL } from './env.js';
 
-async function getUser(emailInput, passwordInput) {
+async function login(emailInput, passwordInput) {
     try {
-        const response = await fetch(`${API_BASE_URL}/user`);
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: emailInput,
+                password: passwordInput,
+            }),
+        });
         if (!response.ok) throw new Error('Failed to fetch posts');
 
         const data = await response.json();
+        // 로그인 성공 시 사용자 정보 저장
+        if (data.user) {
+            localStorage.setItem('user', JSON.stringify(data.user));
+        }
         return data;
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -20,15 +34,13 @@ document
         const passwordInput = document.querySelector("input[type='password']");
         const errorMessage = document.querySelector('.error-message');
 
-        fetch();
         if (!passwordInput.value) {
             event.preventDefault(); // 폼 전송 막기
             errorMessage.style.display = 'block'; // 오류 메시지 보이기
         } else {
-            errorMessage.style.display = 'none'; // 오류 메시지 숨기기
-            const user = await getUser(emailInput.value, passwordInput.value);
-            if (user) {
-                localStorage.setItem('userToken', 'TOKEN');
+            errorMessage.style.display = 'none';
+            const response = await login(emailInput.value, passwordInput.value);
+            if (response.user) {
                 window.location.href = '/';
             } else {
                 event.preventDefault(); // 폼 전송 막기
