@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const confirmQuitButton = document.getElementById('confirmQuitButton');
     const cancelQuitButton = document.getElementById('cancelQuitButton');
 
+    let originalNickname = ''; // 원래 닉네임을 저장할 변수 추가
+
     // 사용자 정보 불러오기
     async function loadUserProfile() {
         try {
@@ -39,6 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 emailDiv.textContent = userData.email;
                 // 닉네임 설정
                 nicknameInput.value = userData.nickname;
+                originalNickname = userData.nickname; // 원래 닉네임 저장
                 // 프로필 이미지 설정
                 if (userData.img) {
                     profilePicture.style.backgroundImage = `url(${PUBLIC_URL}${userData.img})`;
@@ -46,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     profilePicture.style.backgroundPosition = 'center';
                 }
             } else {
-                // window.location.href = '/login';
+                window.location.href = '/login';
             }
         } catch (error) {
             console.error('프로필 로딩 실패:', error);
@@ -57,35 +60,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 초기 프로필 정보 로드
     await loadUserProfile();
 
-    form.addEventListener('click', event => {
-        // Prevent the form from submitting
+    form.addEventListener('submit', async event => {
+        // 폼 기본 제출 동작 방지
         event.preventDefault();
 
-        // Clear any previous error messages
+        // 이전 에러 메시지 초기화
         nicknameError.textContent = '';
 
         const nicknameValue = nicknameInput.value.trim();
 
-        // Check if the nickname is empty
+        // 닉네임 유효성 검사
         if (nicknameValue === '') {
             nicknameError.textContent = '*닉네임을 입력해주세요.';
-            return;
+            return false;
         }
 
-        // Check for duplicate nickname (this is a placeholder condition, you may need to implement an API call to check for actual duplicates)
-        if (nicknameValue === 'testNickname') {
-            nicknameError.textContent = '*중복된 닉네임입니다.';
-            return;
-        }
-        // Check if the nickname is longer than 10 characters
+        // 닉네임 길이 검사
         if (nicknameValue.length > 10) {
             nicknameError.textContent = '*최대 10글자까지 입력 가능합니다.';
-            return;
+            return false;
         }
 
-        // If all validations pass, you can submit the form
-        //form.submit();
-        showToastMessage('수정완료');
+        // 닉네임이 변경되었는지 확인
+        if (nicknameValue === originalNickname) {
+            nicknameError.textContent = '*현재 닉네임과 동일합니다.';
+            return false;
+        }
+
+        // FormData 객체 생성
+        const formData = new FormData();
+        if (nicknameValue !== originalNickname) {
+            formData.append('nickname', nicknameValue);
+        }
+
+        // 이미지 파일이 있는 경우에만 추가
+        if (fileInput.files[0]) {
+            formData.append('img', fileInput.files[0]);
+        }
+        console.log(nicknameValue);
+        console.log(fileInput.files[0]);
+        try {
+            const response = await fetch(`${API_BASE_URL}/users`, {
+                method: 'PUT',
+                credentials: 'include',
+                body: formData,
+            });
+
+            if (response.ok) {
+                showToastMessage('프로필이 성공적으로 수정되었습니다.');
+                // 프로필 정보 다시 불러오기
+                await loadUserProfile();
+            } else {
+                const errorData = await response.json();
+                showToastMessage(
+                    errorData.message || '프로필 수정에 실패했습니다.',
+                );
+            }
+        } catch (error) {
+            console.error('프로필 수정 실패:', error);
+            showToastMessage('프로필 수정 중 오류가 발생했습니다.');
+        }
     });
 
     // 회원 탈퇴 버튼 클릭 시
