@@ -134,9 +134,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // 확인 버튼 클릭 시
-    confirmQuitButton.addEventListener('click', () => {
+    confirmQuitButton.addEventListener('click', async () => {
         // 회원 탈퇴 처리 로직
-        confirmQuitModal.classList.remove('show'); // show 클래스 제거
+        const response = await fetch(`${API_BASE_URL}/users`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+        if (response.ok) {
+            window.location.href = '/';
+        }
     });
 
     // 프로필 이미지 업로드 및 삭제 기능
