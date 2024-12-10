@@ -40,7 +40,8 @@ document
         } else {
             errorMessage.style.display = 'none';
             const response = await login(emailInput.value, passwordInput.value);
-            if (response.user) {
+            console.log(response);
+            if (response) {
                 window.location.href = '/';
             } else {
                 event.preventDefault(); // 폼 전송 막기
