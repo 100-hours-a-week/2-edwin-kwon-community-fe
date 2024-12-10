@@ -39,11 +39,15 @@ document
             errorMessage.style.display = 'block'; // 오류 메시지 보이기
         } else {
             errorMessage.style.display = 'none';
-            const response = await login(emailInput.value, passwordInput.value);
-            console.log(response);
-            if (response) {
-                window.location.href = '/';
-            } else {
+            try {
+                const response = await login(
+                    emailInput.value,
+                    passwordInput.value,
+                );
+                if (response) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
                 event.preventDefault(); // 폼 전송 막기
                 errorMessage.style.display = 'block'; // 오류 메시지 보이기
             }
