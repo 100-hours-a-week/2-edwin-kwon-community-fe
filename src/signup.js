@@ -54,6 +54,12 @@ signupForm.addEventListener('submit', async e => {
     const nickname = document.getElementById('nickname').value;
     const profileImageFile = fileInput.files[0];
 
+    console.log('email:', email);
+    console.log('password:', password);
+    console.log('confirmPassword:', confirmPassword);
+    console.log('nickname:', nickname);
+    console.log('profileImageFile:', profileImageFile);
+
     // 프로필 사진 확인
     if (!profileImageFile) {
         alert('프로필 사진을 업로드해주세요.');
@@ -107,13 +113,6 @@ signupForm.addEventListener('submit', async e => {
             alert('이미 사용 중인 이메일입니다.');
             return;
         }
-
-        // FormData 객체 생성 및 데이터 추가
-        const formData = new FormData();
-        formData.append('email', email);
-        formData.append('password', password);
-        formData.append('nickname', nickname);
-        formData.append('img', profileImageFile);
 
         // 회원가입 요청 수정
         const response = await fetch(`${API_BASE_URL}/auth/signup`, {
