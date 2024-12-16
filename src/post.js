@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
                 method: 'DELETE',
+                credentials: 'include',
             });
 
             if (!response.ok) throw new Error('게시글 삭제에 실패했습니다.');
@@ -57,6 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     body: JSON.stringify({
                         content: newContent,
                     }),
+                    credentials: 'include',
                 },
             );
 
@@ -87,6 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     `${API_BASE_URL}/posts/${postId}/comments/${commentId}`,
                     {
                         method: 'DELETE',
+                        credentials: 'include',
                     },
                 );
 
@@ -132,14 +135,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error('Network response was not ok');
         }
         const post = await response.json();
-
-        const userResponse = await fetch(
+        const writerResponse = await fetch(
             `${API_BASE_URL}/users/${post.member_id}`,
         );
-        if (!userResponse.ok) {
+        if (!writerResponse.ok) {
             throw new Error('Network response was not ok');
         }
-        const user = await userResponse.json();
+        const writer = await writerResponse.json();
+
+        // 사용자 프로필 이미지와 닉네임 설정
+        const userAvatar = document.querySelector('.user-avatar');
+        userAvatar.style.backgroundImage = writer.img
+            ? `url(${PUBLIC_URL}${writer.img})`
+            : `url(${PUBLIC_URL}/uploads/profiles/default.jpg)`;
+
+        document.getElementById('post-author').innerText = writer.nickname;
 
         const likeListResponse = await fetch(
             `${API_BASE_URL}/posts/${postId}/like`,
@@ -150,13 +160,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const likeList = await likeListResponse.json();
 
+        const userResponse = await fetch(`${API_BASE_URL}/users/profile`, {
+            credentials: 'include',
+        });
+        const user = await userResponse.json();
+        console.log(user.member_id);
+        const userId = user.member_id ? user.member_id : null;
         // 좋아요 여부 확인
-        isLiked = likeList.data.some(like => like.member_id === 1);
+        isLiked = likeList.data.some(like => like.member_id === userId);
+
+        const img = post.img ? `${PUBLIC_URL}${post.img}` : null;
+
+        if (!img) {
+            document.getElementById('post-img').style.display = 'none';
+        }
 
         // HTML 요소에 포스트 정보 추가
         document.getElementById('post-title').innerText = post.title;
         document.getElementById('post-content').innerText = post.content;
-        document.getElementById('post-img').src = `${PUBLIC_URL}${post.img}`;
+        document.getElementById('post-img').src = img;
 
         // 좋아요 버튼 업데이트
         const likeButton = document.getElementById('like-button');
@@ -172,7 +194,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('view-count').innerText =
             `${utils.formatNumber(post.view_cnt)}\n 조회수`;
 
-        document.getElementById('post-author').innerText = user.nickname;
         document.getElementById('post-date').innerText = utils.formatDate(
             post.created_at,
         );
@@ -218,14 +239,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="comment-header">
                         <div class="comment-user-info">
                             <div class="user-avatar">
-                            <img src="${comment.img}" class="avatar">
+                                <img src="${PUBLIC_URL}${comment.img || '/uploads/profiles/default.jpg'}" class="avatar" alt="프로필 이미지">
+                            </div>
+                            <span class="comment-author">${comment.nickname}</span>
+                            <span class="comment-date">${utils.formatDate(comment.created_at)}</span>
                         </div>
-                        <span class="comment-author">${comment.nickname}</span>
-                        <span class="comment-date">${utils.formatDate(comment.created_at)}</span>
-                    </div>
                         <div class="comment-actions">
-                        <button onclick="editComment(${comment.comment_id})">수정</button>
-                        <button onclick="deleteComment(${comment.comment_id})">삭제</button>
+                            <button onclick="editComment(${comment.comment_id})">수정</button>
+                            <button onclick="deleteComment(${comment.comment_id})">삭제</button>
                         </div>
                     </div>
                     <div class="comment-text">${comment.content}</div>
@@ -251,6 +272,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include',
                     body: JSON.stringify({
                         content: commentText,
                     }),
@@ -292,6 +314,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include',
                     body: JSON.stringify({ content: newContent }),
                 },
             );
@@ -313,6 +336,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         headers: {
                             'Content-Type': 'application/json',
                         },
+                        credentials: 'include',
                     },
                 );
                 const data = await response.json();
@@ -328,6 +352,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         headers: {
                             'Content-Type': 'application/json',
                         },
+                        credentials: 'include',
                     },
                 );
                 const data = await response.json();

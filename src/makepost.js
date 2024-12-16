@@ -62,8 +62,10 @@ postForm.addEventListener('submit', async e => {
 
         // FormData로 전송
         const response = await fetch(`${API_BASE_URL}/posts`, {
+            credentials: 'include',
             method: 'POST',
             body: formData, // headers 제거 - FormData는 자동으로 설정됨
+            mode: 'cors',
         });
 
         if (!response.ok) {

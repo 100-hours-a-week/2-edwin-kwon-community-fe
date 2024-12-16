@@ -114,6 +114,13 @@ signupForm.addEventListener('submit', async e => {
             return;
         }
 
+        // FormData 객체 생성 및 데이터 추가
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('nickname', nickname);
+        formData.append('img', profileImageFile);
+
         // 회원가입 요청 수정
         const response = await fetch(`${API_BASE_URL}/auth/signup`, {
             method: 'POST',

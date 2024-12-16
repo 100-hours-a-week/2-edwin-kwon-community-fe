@@ -1,5 +1,6 @@
 import utils from './utils.js';
 import { API_BASE_URL } from './env.js';
+import { PUBLIC_URL } from './env.js';
 
 const api = {
     // 게시글 목록 조회
@@ -35,7 +36,7 @@ const domHandler = {
                     </div>
                 </div>
                 <div class="user-info">
-                    <div class="user-avatar"></div>
+                    <div class="user-avatar" style="background-image: url(${PUBLIC_URL}${post.img})"></div>
                     <div class="user-name">${post.nickname}</div>
                 </div>
             </div>

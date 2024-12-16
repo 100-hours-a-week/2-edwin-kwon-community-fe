@@ -33,15 +33,15 @@ main {
 .user-info {
     display: flex;
     align-items: center;
-    gap: 8px; /* 요소들 사이 간격 */
 }
 
 .user-avatar {
-    width: 36px;
-    height: 36px;
-    background-color: #e1e1e1;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    /* margin-right: 8px; */
+    background-size: cover;
+    background-position: center;
+    margin-right: 10px;
 }
 
 #post-author {
@@ -344,4 +344,21 @@ main {
 
 #submit-comment.edit-mode {
     background-color: #4caf50;
+}
+
+/* 댓글 아바타 스타일 추가 */
+.comment .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    margin-right: 10px;
+    overflow: hidden; /* 이미지가 컨테이너를 벗어나지 않도록 */
+}
+
+.comment .user-avatar img.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지 비율 유지하면서 컨테이너에 맞춤 */
 }
