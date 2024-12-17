@@ -1,5 +1,6 @@
 body {
     font-family: Arial, sans-serif;
+    background-color: var(--background-color);
 }
 
 /* 로그인 컨테이너 스타일 */
@@ -51,7 +52,7 @@ body {
 
 /* 버튼 스타일 */
 .login-button {
-    background-color: #aca0eb;
+    background-color: var(--secondary-background);
     color: white;
     width: 90%;
     padding: 10px;

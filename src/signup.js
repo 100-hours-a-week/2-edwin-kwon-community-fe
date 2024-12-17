@@ -54,12 +54,6 @@ signupForm.addEventListener('submit', async e => {
     const nickname = document.getElementById('nickname').value;
     const profileImageFile = fileInput.files[0];
 
-    console.log('email:', email);
-    console.log('password:', password);
-    console.log('confirmPassword:', confirmPassword);
-    console.log('nickname:', nickname);
-    console.log('profileImageFile:', profileImageFile);
-
     // 프로필 사진 확인
     if (!profileImageFile) {
         alert('프로필 사진을 업로드해주세요.');

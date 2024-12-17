@@ -1,7 +1,11 @@
+body {
+    font-family: 'Pretendard', sans-serif;
+    background-color: var(--background-color);
+}
+
 .container {
     max-width: 600px;
     margin: 40px auto;
-    background-color: #fff;
     padding: 30px;
 }
 

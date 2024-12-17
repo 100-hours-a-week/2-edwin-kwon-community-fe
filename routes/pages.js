@@ -9,7 +9,7 @@ const router = express.Router();
 
 // 메인 페이지
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/index.html'));
+    res.sendFile(path.join(__dirname, '../views/postList.html'));
 });
 
 router.get('/login', (req, res) => {
@@ -21,7 +21,7 @@ router.get('/signup', (req, res) => {
 });
 
 router.get('/posts/make', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/makepost.html'));
+    res.sendFile(path.join(__dirname, '../views/createPost.html'));
 });
 
 router.get('/posts/:post_id', (req, res) => {

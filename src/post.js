@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const commentInput = document.getElementById('comment-input');
     const submitCommentButton = document.getElementById('submit-comment');
     const commentsSection = document.getElementById('comments-section');
-    const deleteButton = document.getElementById('delete-button');
     const postDeleteModal = document.getElementById('postDeleteModal');
     const confirmPostDeleteButton = document.getElementById(
         'confirmPostDeleteButton',
@@ -16,6 +15,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cancelPostDeleteButton = document.getElementById(
         'cancelPostDeleteButton',
     );
+    const editButton = document.getElementById('edit-button');
+    const deleteButton = document.getElementById('delete-button');
+    const userResponse = await fetch(`${API_BASE_URL}/users/profile`, {
+        credentials: 'include',
+    });
+    const user = await userResponse.json();
 
     deleteButton.addEventListener('click', e => {
         e.preventDefault();
@@ -160,14 +165,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const likeList = await likeListResponse.json();
 
-        const userResponse = await fetch(`${API_BASE_URL}/users/profile`, {
-            credentials: 'include',
-        });
-        const user = await userResponse.json();
-        console.log(user.member_id);
-        const userId = user.member_id ? user.member_id : null;
+        if (user.member_id === post.member_id) {
+            editButton.style.display = 'inline-block';
+            deleteButton.style.display = 'inline-block';
+        } else {
+            editButton.style.display = 'none';
+            deleteButton.style.display = 'none';
+        }
+
         // 좋아요 여부 확인
-        isLiked = likeList.data.some(like => like.member_id === userId);
+        isLiked = likeList.data.some(like => like.member_id === user.member_id);
 
         const img = post.img ? `${PUBLIC_URL}${post.img}` : null;
 
@@ -183,12 +190,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 좋아요 버튼 업데이트
         const likeButton = document.getElementById('like-button');
         likeButton.innerText = `${utils.formatNumber(likeList.data.length)}\n 좋아요수`;
-        if (isLiked) {
-            likeButton.classList.add('liked');
-        } else {
-            likeButton.classList.remove('liked');
+
+        if (userResponse.ok) {
+            if (isLiked) {
+                likeButton.classList.add('liked');
+            } else {
+                likeButton.classList.remove('liked');
+            }
+            likeButton.addEventListener('click', () => toggleLike());
         }
-        likeButton.addEventListener('click', () => toggleLike());
 
         // 텍스트와 함께 숫자를 표시
         document.getElementById('view-count').innerText =
@@ -235,6 +245,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             comments.forEach(comment => {
                 const commentElement = document.createElement('div');
                 commentElement.classList.add('comment');
+
+                // 현재 사용자가 댓글 작성자인 경우에만 수정/삭제 버튼 표시
+                const actionButtons =
+                    user.member_id === comment.member_id
+                        ? `<div class="comment-actions">
+                    <button onclick="editComment(${comment.comment_id})">수정</button>
+                    <button onclick="deleteComment(${comment.comment_id})">삭제</button>
+                   </div>`
+                        : '';
+
                 commentElement.innerHTML = `
                     <div class="comment-header">
                         <div class="comment-user-info">
@@ -244,10 +264,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <span class="comment-author">${comment.nickname}</span>
                             <span class="comment-date">${utils.formatDate(comment.created_at)}</span>
                         </div>
-                        <div class="comment-actions">
-                            <button onclick="editComment(${comment.comment_id})">수정</button>
-                            <button onclick="deleteComment(${comment.comment_id})">삭제</button>
-                        </div>
+                        ${actionButtons}
                     </div>
                     <div class="comment-text">${comment.content}</div>
                 `;
@@ -327,7 +344,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 좋아요 기능
     async function toggleLike() {
         try {
-            console.log('isLiked:', isLiked);
             if (isLiked) {
                 const response = await fetch(
                     `${API_BASE_URL}/posts/${postId}/like`,

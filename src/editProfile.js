@@ -81,12 +81,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             return false;
         }
 
-        // 닉네임이 변경되었는지 확인
-        if (nicknameValue === originalNickname) {
-            nicknameError.textContent = '*현재 닉네임과 동일합니다.';
-            return false;
-        }
-
         // FormData 객체 생성
         const formData = new FormData();
         if (nicknameValue !== originalNickname) {
@@ -97,8 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (fileInput.files[0]) {
             formData.append('img', fileInput.files[0]);
         }
-        console.log(nicknameValue);
-        console.log(fileInput.files[0]);
+
         try {
             const response = await fetch(`${API_BASE_URL}/users`, {
                 method: 'PUT',

@@ -1,6 +1,7 @@
 import utils from './utils.js';
 import { API_BASE_URL } from './env.js';
 import { PUBLIC_URL } from './env.js';
+import { loginState, checkLoginStatus } from './header.js';
 
 const api = {
     // 게시글 목록 조회
@@ -23,7 +24,6 @@ const domHandler = {
     // 게시글 HTML 생성
     async createPostElement(post) {
         const postUrl = `/posts/${post.post_id}`;
-
         return `
             <a href="${postUrl}" div class="post" data-post-id="${post.id}">
                 <div class="post-header">
@@ -68,17 +68,24 @@ async function loadPosts() {
 }
 
 // 이벤트 리스너 등록
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    // loginState가 없는 경우에만 checkLoginStatus 호출
+    if (!loginState) {
+        await checkLoginStatus();
+    }
+
     // 초기 게시글 로드
     loadPosts();
 
     // 게시글 작성 버튼 클릭 이벤트
     const writeButton = document.querySelector('.write-button');
-    if (writeButton) {
-        writeButton.addEventListener('click', () =>
-            domHandler.toggleWriteForm(),
-        );
-    }
+    writeButton.addEventListener('click', () => {
+        if (!loginState.isLoggedIn) {
+            window.location.href = '/login';
+            return;
+        }
+        window.location.href = '/posts/make';
+    });
 });
 
 // 에러 처리를 위한 전역 핸들러

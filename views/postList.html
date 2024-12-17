@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>게시판</title>
+        <link rel="stylesheet" href="/css/postList.css" />
+        <link rel="stylesheet" href="/css/header.css" />
+        <link rel="stylesheet" href="/css/common.css" />
+    </head>
+    <body>
+        <script type="module" src="/src/postList.js"></script>
+        <!-- supposed to be header here -->
+        <script type="module">
+            import headerHtml from '../src/header.js';
+            document.body.insertAdjacentHTML('afterbegin', headerHtml);
+        </script>
+        <div class="container">
+            <div class="welcome-message">
+                <span style="font-weight: 1000">코</span>
+                <span>스모스에서,<br /></span>
+                <span style="font-weight: 1000">코</span>
+                <span>딩하는,<br /></span>
+                <span style="font-weight: 1000">아</span>
+                <span>름다운 우리.</span>
+            </div>
+
+            <button class="write-button">게시글 작성</button>
+
+            <div class="posts">
+        </div>
+    </body>
+</html>
