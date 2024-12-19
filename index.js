@@ -28,7 +28,7 @@ app.use((req, res) => {
 });
 
 // 서버 시작
-app.listen(PORT, () => {
+app.listen(process.env.PORT, () => {
     console.log(
         `Frontend server is running on http://${process.env.HOST}:${process.env.PORT}`,
     );
