@@ -2,9 +2,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pageRoutes from './routes/pages.js';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { PORT, HOST } from './src/env.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,8 +26,6 @@ app.use((req, res) => {
 });
 
 // 서버 시작
-app.listen(process.env.PORT, () => {
-    console.log(
-        `Frontend server is running on http://${process.env.HOST}:${process.env.PORT}`,
-    );
+app.listen(PORT, () => {
+    console.log(`Frontend server is running on http://${HOST}:${PORT}`);
 });
