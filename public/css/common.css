@@ -17,3 +17,12 @@
     /* 테두리 색상 */
     --border-color: #cccccc;
 }
+
+/* 새로 추가할 스타일 */
+html,
+body {
+    min-height: 100vh;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
