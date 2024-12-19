@@ -2,12 +2,14 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pageRoutes from './routes/pages.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // 정적 파일 제공
 app.use(express.static('public'));
@@ -28,6 +30,6 @@ app.use((req, res) => {
 // 서버 시작
 app.listen(PORT, () => {
     console.log(
-        `Frontend server is running on http://${process.env.HOST}:${PORT}`,
+        `Frontend server is running on http://${process.env.HOST}:${process.env.PORT}`,
     );
 });
