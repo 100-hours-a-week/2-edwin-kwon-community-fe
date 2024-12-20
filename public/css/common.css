@@ -4,8 +4,9 @@
     --primary-hover: #7f6aee;
 
     /* 배경 색상 */
-    --background-color: #f2cb05;
+    --background-color: #acbfce;
     --secondary-background: #402023;
+    --post-background: #f2cb05;
 
     /* 버튼 색상 */
     --button-color: #c4a5fa;
@@ -18,11 +19,14 @@
     --border-color: #cccccc;
 }
 
-/* 새로 추가할 스타일 */
-html,
-body {
-    min-height: 100vh;
+html {
     height: 100%;
+    background-color: var(--background-color);
+}
+
+body {
+    min-height: 100%;
+    background-color: var(--background-color);
     margin: 0;
     padding: 0;
 }

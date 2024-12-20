@@ -1,5 +1,5 @@
 const PORT = 3000;
-const HOST = '52.78.124.23';
+const HOST = 'localhost';
 const apiVersion = 'v1';
 
 const BACKEND_URL = `http://${HOST}:8000`;
