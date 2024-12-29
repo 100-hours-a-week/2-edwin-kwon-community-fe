@@ -59,7 +59,8 @@ BACKEND_URL=http://localhost:8000
 npm start
 ```
 ## 👀 Usage
-<!-- ![usgae video](soon) -->
+https://github.com/user-attachments/assets/ed1167e7-67cf-4491-9b3f-e59e17398d63
+
 
 <br />
 
