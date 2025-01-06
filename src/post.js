@@ -246,7 +246,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const commentElement = document.createElement('div');
                 commentElement.classList.add('comment');
 
-                // 현재 사용자가 댓글 작성자인 경우에만 수정/삭제 버튼 표시
+                // 수정 시각 표시 로직 추가
+                const dateDisplay = comment.updated_at
+                    ? `<span class="comment-date">${utils.formatDate(comment.created_at)}</span>
+                       <span class="comment-edited">(수정됨: ${utils.formatDate(comment.updated_at)})</span>`
+                    : `<span class="comment-date">${utils.formatDate(comment.created_at)}</span>`;
+
+                console.log(dateDisplay);
+
                 const actionButtons =
                     user.member_id === comment.member_id
                         ? `<div class="comment-actions">
@@ -262,7 +269,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <img src="${PUBLIC_URL}${comment.img || '/uploads/profiles/default.jpg'}" class="avatar" alt="프로필 이미지">
                             </div>
                             <span class="comment-author">${comment.nickname}</span>
-                            <span class="comment-date">${utils.formatDate(comment.created_at)}</span>
+                            ${dateDisplay}
                         </div>
                         ${actionButtons}
                     </div>
