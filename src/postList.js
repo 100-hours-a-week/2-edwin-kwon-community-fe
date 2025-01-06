@@ -7,11 +7,17 @@ const api = {
     // 게시글 목록 조회
     async getPosts() {
         try {
-            const response = await fetch(`${API_BASE_URL}/posts`);
+            const response = await fetch(`${API_BASE_URL}/posts`, {
+                method: 'GET',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    Pragma: 'no-cache',
+                    Expires: '0',
+                },
+                credentials: 'include',
+            });
             if (!response.ok) throw new Error('Failed to fetch posts');
-
-            const data = await response.json();
-            return data;
+            return await response.json();
         } catch (error) {
             console.error('Error fetching posts:', error);
             throw error;
@@ -92,4 +98,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 window.addEventListener('unhandledrejection', function (event) {
     console.error('Unhandled promise rejection:', event.reason);
     alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+});
+
+// 뒤로가기 감지 및 페이지 새로고침
+window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+        // bfcache로부터 복원된 경우 (뒤로가기/앞으로가기)
+        window.location.reload();
+    }
 });
