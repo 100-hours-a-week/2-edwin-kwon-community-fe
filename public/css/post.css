@@ -144,16 +144,6 @@ body {
     font-weight: bold;
 }
 
-.comment .date {
-    font-size: 0.85em;
-    color: #666;
-    margin-left: 10px;
-}
-
-.comment p {
-    margin: 5px 0;
-}
-
 .comment .action-buttons button {
     font-size: 0.9em;
     color: #007bff;
@@ -287,7 +277,7 @@ body {
 .comment-user-info {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 5px;
 }
 
 .comment-author {
@@ -296,7 +286,8 @@ body {
     color: #333;
 }
 
-.comment-date {
+.comment-date,
+.comment-edited {
     font-size: 14px;
     font-weight: 400;
     color: #333;
@@ -320,8 +311,6 @@ body {
     background: none;
     border: 1px solid #aca0eb;
     border-radius: 8px;
-    padding: 4px 12px;
-    font-size: 15px;
     font-weight: 400;
     color: #333;
     cursor: pointer;

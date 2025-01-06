@@ -78,3 +78,27 @@ postForm.addEventListener('submit', async e => {
         console.error('에러 발생:', error);
     }
 });
+
+// 페이지 로드 시 기존 데이터 가져오기
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+            method: 'GET',
+            credentials: 'include',
+            mode: 'cors',
+        });
+
+        if (!response.ok) {
+            throw new Error('데이터를 가져오는 데 실패했습니다.');
+        }
+
+        const postData = await response.json();
+        titleInput.value = postData.title;
+        contentInput.value = postData.content;
+
+        // 입력 필드가 채워졌으므로 버튼 상태 업데이트
+        checkInputs();
+    } catch (error) {
+        console.error('에러 발생:', error);
+    }
+});

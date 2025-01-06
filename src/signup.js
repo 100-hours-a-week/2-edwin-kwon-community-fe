@@ -54,12 +54,6 @@ signupForm.addEventListener('submit', async e => {
     const nickname = document.getElementById('nickname').value;
     const profileImageFile = fileInput.files[0];
 
-    // 프로필 사진 확인
-    if (!profileImageFile) {
-        alert('프로필 사진을 업로드해주세요.');
-        return;
-    }
-
     // 이메일 검증
     if (!validateEmail(email)) {
         alert('올바른 이메일 형식이 아닙니다.');
@@ -113,7 +107,9 @@ signupForm.addEventListener('submit', async e => {
         formData.append('email', email);
         formData.append('password', password);
         formData.append('nickname', nickname);
-        formData.append('img', profileImageFile);
+        if (profileImageFile) {
+            formData.append('img', profileImageFile);
+        }
 
         // 회원가입 요청 수정
         const response = await fetch(`${API_BASE_URL}/auth/signup`, {
