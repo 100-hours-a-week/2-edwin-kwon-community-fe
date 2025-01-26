@@ -47,7 +47,7 @@ function updateHeaderUI(state) {
     profileIcon.parentNode.replaceChild(oldProfileIcon, profileIcon);
 
     if (state.isLoggedIn) {
-        oldProfileIcon.style.backgroundImage = `url(${PUBLIC_URL}${state.data.img})`;
+        oldProfileIcon.style.backgroundImage = `url(${state.data.img})`;
         oldProfileIcon.addEventListener('click', function (e) {
             e.stopPropagation(); // 이벤트 버블링 방지
             const isHidden = dropdownMenu.classList.contains('hidden');

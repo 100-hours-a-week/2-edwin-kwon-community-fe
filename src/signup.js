@@ -80,8 +80,8 @@ signupForm.addEventListener('submit', async e => {
         return;
     }
 
-    // 닉네임 중복 확인
     try {
+        // 닉네임 중복 확인
         const checkNicknameResponse = await fetch(
             `${API_BASE_URL}/auth/check-nickname?nickname=${nickname}`,
         );
@@ -102,19 +102,70 @@ signupForm.addEventListener('submit', async e => {
             return;
         }
 
-        // FormData 객체 생성 및 데이터 추가
-        const formData = new FormData();
-        formData.append('email', email);
-        formData.append('password', password);
-        formData.append('nickname', nickname);
+        // Pre-signed URL 요청
+        let imageUrl = '';
         if (profileImageFile) {
-            formData.append('img', profileImageFile);
+            try {
+                // Pre-signed URL 요청
+                const presignedResponse = await fetch(
+                    `${API_BASE_URL}/auth/presigned-url/profile`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            fileType: profileImageFile.type,
+                        }),
+                    },
+                );
+
+                if (!presignedResponse.ok) {
+                    throw new Error('이미지 업로드 URL 생성에 실패했습니다.');
+                }
+
+                const { presignedUrl, cloudFrontUrl } =
+                    await presignedResponse.json();
+                console.log('presignedUrl', presignedUrl);
+                console.log('cloudFrontUrl', cloudFrontUrl);
+
+                // S3에 직접 업로드
+                const uploadResponse = await fetch(presignedUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': profileImageFile.type,
+                    },
+                    body: profileImageFile,
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error('이미지 업로드에 실패했습니다.');
+                }
+
+                // CloudFront URL 사용 (이미지 표시용)
+                imageUrl = cloudFrontUrl;
+                console.log('imageUrl', imageUrl);
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;
+            }
         }
 
-        // 회원가입 요청 수정
+        const requestData = {
+            email,
+            password,
+            nickname,
+        };
+        if (imageUrl) {
+            requestData.imgUrl = imageUrl;
+        }
+
         const response = await fetch(`${API_BASE_URL}/auth/signup`, {
             method: 'POST',
-            body: formData,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
         });
 
         const responseData = await response.json();
