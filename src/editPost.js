@@ -49,22 +49,69 @@ postForm.addEventListener('submit', async e => {
 
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
+    const imageFile = fileInput.files[0];
 
     try {
-        // FormData 객체 생성 및 데이터 추가
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('content', content);
+        let imageUrl = '';
+        if (imageFile) {
+            try {
+                // Pre-signed URL 요청
+                const presignedResponse = await fetch(
+                    `${API_BASE_URL}/auth/presigned-url/post`,
+                    {
+                        credentials: 'include',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            fileType: imageFile.type,
+                        }),
+                    },
+                );
 
-        // 이미지 파일이 있는 경우에만 추가
-        if (fileInput.files[0]) {
-            formData.append('img', fileInput.files[0]);
+                if (!presignedResponse.ok) {
+                    throw new Error('이미지 업로드 URL 생성에 실패했습니다.');
+                }
+
+                const { presignedUrl, cloudFrontUrl } =
+                    await presignedResponse.json();
+
+                // S3에 직접 업로드
+                const uploadResponse = await fetch(presignedUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': imageFile.type,
+                    },
+                    body: imageFile,
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error('이미지 업로드에 실패했습니다.');
+                }
+
+                imageUrl = cloudFrontUrl;
+            } catch (error) {
+                console.error('이미지 업로드 에러:', error);
+                throw error;
+            }
+        }
+
+        const requestData = {
+            title,
+            content,
+        };
+        if (imageUrl) {
+            requestData.imgUrl = imageUrl;
         }
 
         const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
             method: 'PUT',
             credentials: 'include',
-            body: formData,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
             mode: 'cors',
         });
 
@@ -72,10 +119,10 @@ postForm.addEventListener('submit', async e => {
             throw new Error('서버 에러');
         }
 
-        // 성공 처리
         window.location.href = `/posts/${postId}`;
     } catch (error) {
         console.error('에러 발생:', error);
+        alert(error.message);
     }
 });
 

@@ -42,7 +42,7 @@ const domHandler = {
                     </div>
                 </div>
                 <div class="user-info">
-                    <div class="user-avatar" style="background-image: url(${PUBLIC_URL}${post.img})"></div>
+                    <div class="user-avatar" style="background-image: url(${post.img})"></div>
                     <div class="user-name">${post.nickname}</div>
                 </div>
             </div>

@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 originalNickname = userData.nickname; // 원래 닉네임 저장
                 // 프로필 이미지 설정
                 if (userData.img) {
-                    profilePicture.style.backgroundImage = `url(${PUBLIC_URL}${userData.img})`;
+                    profilePicture.style.backgroundImage = `url(${userData.img})`;
                     profilePicture.style.backgroundSize = 'cover';
                     profilePicture.style.backgroundPosition = 'center';
                 }
@@ -61,13 +61,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadUserProfile();
 
     form.addEventListener('submit', async event => {
-        // 폼 기본 제출 동작 방지
         event.preventDefault();
-
-        // 이전 에러 메시지 초기화
         nicknameError.textContent = '';
 
         const nicknameValue = nicknameInput.value.trim();
+        const imageFile = fileInput.files[0];
 
         // 닉네임 유효성 검사
         if (nicknameValue === '') {
@@ -75,33 +73,77 @@ document.addEventListener('DOMContentLoaded', async () => {
             return false;
         }
 
-        // 닉네임 길이 검사
         if (nicknameValue.length > 10) {
             nicknameError.textContent = '*최대 10글자까지 입력 가능합니다.';
             return false;
         }
 
-        // FormData 객체 생성
-        const formData = new FormData();
-        if (nicknameValue !== originalNickname) {
-            formData.append('nickname', nicknameValue);
-        }
-
-        // 이미지 파일이 있는 경우에만 추가
-        if (fileInput.files[0]) {
-            formData.append('img', fileInput.files[0]);
-        }
-
         try {
+            let imageUrl = '';
+            if (imageFile) {
+                try {
+                    // Pre-signed URL 요청
+                    const presignedResponse = await fetch(
+                        `${API_BASE_URL}/auth/presigned-url/profile`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                fileType: imageFile.type,
+                            }),
+                        },
+                    );
+
+                    if (!presignedResponse.ok) {
+                        throw new Error(
+                            '이미지 업로드 URL 생성에 실패했습니다.',
+                        );
+                    }
+
+                    const { presignedUrl, cloudFrontUrl } =
+                        await presignedResponse.json();
+
+                    // S3에 직접 업로드
+                    const uploadResponse = await fetch(presignedUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': imageFile.type,
+                        },
+                        body: imageFile,
+                    });
+
+                    if (!uploadResponse.ok) {
+                        throw new Error('이미지 업로드에 실패했습니다.');
+                    }
+
+                    imageUrl = cloudFrontUrl;
+                } catch (error) {
+                    console.error('이미지 업로드 에러:', error);
+                    throw error;
+                }
+            }
+
+            const requestData = {};
+            if (nicknameValue !== originalNickname) {
+                requestData.nickname = nicknameValue;
+            }
+            if (imageUrl) {
+                requestData.imgUrl = imageUrl;
+            }
+
             const response = await fetch(`${API_BASE_URL}/users`, {
                 method: 'PUT',
                 credentials: 'include',
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
             });
 
             if (response.ok) {
                 showToastMessage('프로필이 성공적으로 수정되었습니다.');
-                // 프로필 정보 다시 불러오기
                 await loadUserProfile();
             } else {
                 const errorData = await response.json();

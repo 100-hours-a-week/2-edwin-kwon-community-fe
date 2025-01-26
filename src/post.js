@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 사용자 프로필 이미지와 닉네임 설정
         const userAvatar = document.querySelector('.user-avatar');
         userAvatar.style.backgroundImage = writer.img
-            ? `url(${PUBLIC_URL}${writer.img})`
+            ? `url(${writer.img})`
             : `url(${PUBLIC_URL}/uploads/profiles/default.jpg)`;
 
         document.getElementById('post-author').innerText = writer.nickname;
@@ -176,16 +176,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 좋아요 여부 확인
         isLiked = likeList.data.some(like => like.member_id === user.member_id);
 
-        const img = post.img ? `${PUBLIC_URL}${post.img}` : null;
-
+        const img = post.img || null;
         if (!img) {
             document.getElementById('post-img').style.display = 'none';
+        } else {
+            document.getElementById('post-img').src = img;
         }
 
         // HTML 요소에 포스트 정보 추가
         document.getElementById('post-title').innerText = post.title;
         document.getElementById('post-content').innerText = post.content;
-        document.getElementById('post-img').src = img;
 
         // 좋아요 버튼 업데이트
         const likeButton = document.getElementById('like-button');
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="comment-header">
                         <div class="comment-user-info">
                             <div class="user-avatar">
-                                <img src="${PUBLIC_URL}${comment.img || '/uploads/profiles/default.jpg'}" class="avatar" alt="프로필 이미지">
+                                <img src="${comment.img || '/uploads/profiles/default.jpg'}" class="avatar" alt="프로필 이미지">
                             </div>
                             <span class="comment-author">${comment.nickname}</span>
                             ${dateDisplay}
